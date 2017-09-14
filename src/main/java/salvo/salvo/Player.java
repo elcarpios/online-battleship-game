@@ -1,10 +1,7 @@
 package salvo.salvo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import javax.persistence.*;
+import java.util.Set;
 
 // @SomeWord order, is only affecting at the next line of code
 @Entity // Tells Spring to create a Player table for this class
@@ -17,6 +14,9 @@ public class Player {
     private String name;
     private String userName;
     private String password;
+
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<GamePlayer> gameplayers;
 
     public Player() { } // We need an empty constructor for the internal uses
 
