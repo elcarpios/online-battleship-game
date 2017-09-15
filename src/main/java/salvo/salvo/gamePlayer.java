@@ -17,13 +17,15 @@ public class GamePlayer {
     @GeneratedValue(strategy=GenerationType.AUTO) // Tells JPA to get the Id from the DBMS.
     private long id;
 
+    // N gameplays only can have 1 player
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_id")
-    private Player player;
+    @JoinColumn(name = "player_id") // We create a new column for that fetch with name 'player_id'
+    private Player player; // Save all the info of the player
 
+    // N gameplays only can have 1 game
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="game_id")
-    private Game game;
+    @JoinColumn(name="game_id") // We create a new column for that fetch with name 'game_id'
+    private Game game; // Save all the info of the game
 
     public GamePlayer() { }
 
@@ -32,4 +34,15 @@ public class GamePlayer {
         this.player = player;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Game getGame() {
+        return game;
+    }
 }

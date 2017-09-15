@@ -15,7 +15,9 @@ public class Player {
     private String userName;
     private String password;
 
+    // 1 player can have n gameplays
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    // Set<Type> is a group of elements with this type
     Set<GamePlayer> gameplayers;
 
     public Player() { } // We need an empty constructor for the internal uses

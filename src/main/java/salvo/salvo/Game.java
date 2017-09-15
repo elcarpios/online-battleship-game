@@ -15,7 +15,9 @@ public class Game {
 
     private Date creationDate;
 
+    // 1 player can have n gameplays
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    // Set<Type> is a group of elements with this type
     Set<GamePlayer> gameplayers;
 
     public Game() {
@@ -24,6 +26,10 @@ public class Game {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public Date getCreationDate() {
