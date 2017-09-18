@@ -23,16 +23,41 @@ public class SalvoController {
     public List<Object> makeGameDTO() {
         List<Game> games = gameRepo.findAll();
         List<Object> dto = new ArrayList<Object>(); // dto = Data Transfer Object
-
         for(Game game : games) {
             Map<String, Object> eachGame = new LinkedHashMap<String, Object>();
             eachGame.put("id",game.getId());
             eachGame.put("created",game.getCreationDate());
+            eachGame.put("gamePlayers", game.getGameplayers().stream()
+                    .map(gamePlayer -> makeGamePlayerDTO(gamePlayer))
+                    .collect(Collectors.toList()));
             dto.add(eachGame);
         }
         return dto;
     }
 
+    public Map<String,Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id",gamePlayer.getId());
+        dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
+        return dto;
+    }
+
+    public Map<String,Object> makePlayerDTO(Player player) {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id",player.getId());
+        dto.put("email",player.getUserName());
+        return dto;
+    }
+
+    /* // Create a new List <Map> to store de info about gamePlayers
+            List<Map> gamePlayersInfo =  new ArrayList<Map>();
+            List<Long> gamePlayersIds = new ArrayList<Long>();
+            gamePlayersIds = gameRepo.findAll().stream()
+                    .map(gamePlayers -> gamePlayers.getId())
+                    .collect(Collectors.toList());
+            eachGame.put("gamePlayers",gamePlayersIds);
+
+            */
     public List<Long> getId() {
         return gameRepo.findAll().stream()
                 .map(game -> game.getId())

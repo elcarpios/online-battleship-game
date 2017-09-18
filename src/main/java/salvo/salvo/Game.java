@@ -36,5 +36,11 @@ public class Game {
         return creationDate;
     }
 
+    public Set<GamePlayer> getGameplayers() {
+        return gameplayers;
+    }
 
+    public void setGameplayers(Set<GamePlayer> gameplayers) {
+        this.gameplayers = gameplayers;
+    }
 }
