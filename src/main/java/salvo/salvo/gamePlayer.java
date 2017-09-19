@@ -24,7 +24,7 @@ public class GamePlayer {
 
     // 1 gamePlayer has n ships
     @OneToMany(mappedBy = "gameplayer", fetch=FetchType.EAGER)
-    Set<Ship> Ships;
+    Set<Ship> ships;
 
     public GamePlayer() { }
 
@@ -46,6 +46,15 @@ public class GamePlayer {
     }
 
     public Set<Ship> getShips() {
-        return Ships;
+        return ships;
     }
+
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
+
+    /*// Method to add only a 1 ship  NOT FUNCTIONAL.. BY THE MOMENT
+    public void addShip(Ship ship) {
+        this.ships.add(ship);
+    }*/
 }
