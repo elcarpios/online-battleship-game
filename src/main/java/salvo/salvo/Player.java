@@ -36,6 +36,10 @@ public class Player {
         return name;
     }
 
+    public Set<GamePlayer> getGameplayers() {
+        return gameplayers;
+    }
+
     public String getUserName() {
         return userName;
     }

@@ -1,13 +1,9 @@
 package salvo.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -85,4 +81,20 @@ public class SalvoController {
         return (Map<String, Object>) gameRepo.findAll();
     }*/
 
+
+
+
+    // Method to Return DTO with GamePlayer Information
+    @Autowired // Skip configurations elsewhere of what to inject and just does it for you
+    private GamePlayerRepository gamePlayerRepo;
+
+    @RequestMapping(value = "/game_view/{id}")
+    public Map<String,Object> makeGamePlayerDTO(@PathVariable("id") long id) {
+        GamePlayer gamePlayer = gamePlayerRepo.findOne(id);
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id",gamePlayer.getId());
+        dto.put("created",gamePlayer.getGame().getCreationDate());
+        dto.put("gamePlayers", makeGamePlayerDTO(gamePlayer));
+        return dto;
+    }
 }
