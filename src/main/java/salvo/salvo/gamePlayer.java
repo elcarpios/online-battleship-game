@@ -1,6 +1,7 @@
 package salvo.salvo;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -24,13 +25,14 @@ public class GamePlayer {
 
     // 1 gamePlayer has n ships
     @OneToMany(mappedBy = "gameplayer", fetch=FetchType.EAGER)
-    Set<Ship> ships;
+    private Set<Ship> ships;
 
     public GamePlayer() { }
 
     public GamePlayer(Game game, Player player) {
         this.game = game;
         this.player = player;
+        this.ships = new HashSet<>();
     }
 
     public long getId() {
@@ -53,8 +55,8 @@ public class GamePlayer {
         this.ships = ships;
     }
 
-    /*// Method to add only a 1 ship  NOT FUNCTIONAL.. BY THE MOMENT
     public void addShip(Ship ship) {
+        ship.setGameplayer(this);
         this.ships.add(ship);
-    }*/
+    }
 }

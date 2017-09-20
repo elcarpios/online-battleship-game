@@ -52,101 +52,66 @@ public class SalvoApplication {
 
 
 			// Create GamePlayer(s) and Ships
-			// Create unique variables to store locations and ships
-			Set<String> locations = new HashSet<>();
-			Set<Ship> ships = new HashSet<>();
 
-			// GamePlayer1 (Way-to-do-it 1)
-			Ship destroyer = new Ship();
-			destroyer.setType("Destroyer");
-			locations.addAll(Arrays.asList("H2","H3","H4"));
-			destroyer.setLocations(locations);
-			shipRepo.save(destroyer);
-			locations.clear();
-
-			Ship submarine = new Ship();
-			submarine.setType("Submarine");
-			locations.addAll(Arrays.asList("E1","F1","G1"));
-			submarine.setLocations(locations);
-			shipRepo.save(submarine);
-			locations.clear();
-
-			Ship patrolBoat = new Ship();
-			patrolBoat.setType("Patrol Boat");
-			locations.addAll(Arrays.asList("B4","B5"));
-			patrolBoat.setLocations(locations);
-			shipRepo.save(patrolBoat);
-			locations.clear();
-
-			// Add all the ships into the set
-			ships.addAll(Arrays.asList(destroyer,submarine,patrolBoat));
 
 			// Create GamePlayer 1
 			GamePlayer gP1 = new GamePlayer(g1,p1);
-			gP1.setShips(ships);
 			gamePlayerRepo.save(gP1);
-			ships.clear();
+			// Create Ships
+			Ship destroyer1 = new Ship("Destroyer", new HashSet<>(Arrays.asList("H2","H3","H4")));
+			Ship submarine1 = new Ship("Submarine", new HashSet<>(Arrays.asList("E1","F1","G1")));
+			Ship patrolBoat1 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("B4","B5")));
+			// Add the ships
+			gP1.addShip(destroyer1);
+			gP1.addShip(submarine1);
+			gP1.addShip(patrolBoat1);
+			// Save the ships into the Repository
+			shipRepo.save(destroyer1);
+			shipRepo.save(submarine1);
+			shipRepo.save(patrolBoat1);
 
-
-			// GamePlayer 2 (Way-to-do-it 2)
-			locations.addAll(Arrays.asList("B5","C5","D5"));
-			Ship destroyer2 = new Ship("Destroyer",locations);
-			shipRepo.save(destroyer2);
-			locations.clear();
-
-			locations.addAll(Arrays.asList("F1","F2"));
-			Ship patrolBoat2 = new Ship("Patrol Boat", locations);
-			shipRepo.save(patrolBoat2);
-			locations.clear();
-
-			// Add all the ships into the set
-			ships.addAll(Arrays.asList(destroyer2,patrolBoat2));
 
 			// Create GamePlayer 2
 			GamePlayer gP2 = new GamePlayer(g1,p2);
-			gP2.setShips(ships);
 			gamePlayerRepo.save(gP2);
-			ships.clear();
+			// Create Ships
+			Ship destroyer2 = new Ship("Destroyer", new HashSet<>(Arrays.asList("B5","C5","D5")));
+			Ship patrolBoat2 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("F1","F2")));
+			// Add the ships
+			gP2.addShip(destroyer2);
+			gP2.addShip(patrolBoat2);
+			// Save the ships into the Repository
+			shipRepo.save(destroyer2);
+			shipRepo.save(patrolBoat2);
 
-
-			// GamePlayer 3
-			locations.addAll(Arrays.asList("B5","C5","D5"));
-			Ship destroyer3 = new Ship("Destroyer",locations);
-			shipRepo.save(destroyer3);
-			locations.clear();
-
-			locations.addAll(Arrays.asList("C6","C7"));
-			Ship patrolBoat3 = new Ship("Patrol Boat", locations);
-			shipRepo.save(patrolBoat3);
-			locations.clear();
-
-			// Add all the ships into the set
-			ships.addAll(Arrays.asList(destroyer3,patrolBoat3));
 
 			// Create GamePlayer 3
 			GamePlayer gP3 = new GamePlayer(g2,p4);
-			gP3.setShips(ships);
 			gamePlayerRepo.save(gP3);
-			ships.clear();
-/*
-			// GamePlayer 4
-			locations.addAll(Arrays.asList("A2","A3","A4"));
-			destroyer.setLocations(locations);
-			locations.clear();
+			// Create Ships
+			Ship destroyer3 = new Ship("Destroyer", new HashSet<>(Arrays.asList("B5","C5","D5")));
+			Ship patrolBoat3 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("C6","C7")));
+			// Add the ships
+			gP3.addShip(destroyer3);
+			gP3.addShip(patrolBoat3);
+			// Save the ships into the Repository
+			shipRepo.save(destroyer3);
+			shipRepo.save(patrolBoat3);
 
-			locations.addAll(Arrays.asList("G6","H6"));
-			patrolBoat.setLocations(locations);
-			locations.clear();
-
-			// Add all the ships into the set
-			ships.addAll(Arrays.asList(destroyer,patrolBoat));
 
 			// Create GamePlayer 4
 			GamePlayer gP4 = new GamePlayer(g2,p1);
-			gP3.setShips(ships);
 			gamePlayerRepo.save(gP4);
-			ships.clear();
-*/
+			// Create Ships
+			Ship destroyer4 = new Ship("Destroyer", new HashSet<>(Arrays.asList("A2","A3","A4")));
+			Ship patrolBoat4 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("G6","H6")));
+			// Add the ships
+			gP4.addShip(destroyer4);
+			gP4.addShip(patrolBoat4);
+			// Save the ships into the Repository
+			shipRepo.save(destroyer4);
+			shipRepo.save(patrolBoat4);
+
 		};
 	}
 }
