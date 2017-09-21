@@ -1,0 +1,34 @@
+:root {
+	--col-number: 11;
+	--row-number: 11;
+}
+
+.grid {
+	display: grid;
+	justify-content: center;
+	grid-template-columns: repeat(var(--col-number), 50px);
+	grid-template-rows: repeat(var(--row-number), 50px);
+}
+
+.grid-item {
+	border: 1px solid grey;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.destroyer {
+	background-color: #F5FE52;
+}
+
+.submarine {
+	background-color: #6BE2C4;
+}
+
+.patrol-boat {
+	background-color: #994FD5;
+}
