@@ -94,7 +94,22 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",gamePlayer.getId());
         dto.put("created",gamePlayer.getGame().getCreationDate());
-        dto.put("gamePlayers", makeGamePlayerDTO(gamePlayer));
+        dto.put("gamePlayers", gamePlayer.getGame().getGameplayers()
+                .stream()
+                .map(gp-> makeGamePlayerDTO(gp)) // For each gamePlayer(gp) we send it to the function
+                .collect(Collectors.toList()));
+        dto.put("ships", MakeShipsDTO(gamePlayer.getShips()));
+        return dto;
+    }
+
+    public List<Object> MakeShipsDTO(Set<Ship> ships) {
+        List<Object> dto = new ArrayList<>();
+        for(Ship ship : ships){
+            Map<String,Object> eachShip = new HashMap<>();
+            eachShip.put("Type", ship.getType());
+            eachShip.put("Locations", ship.getLocations());
+            dto.add(eachShip);
+        }
         return dto;
     }
 }

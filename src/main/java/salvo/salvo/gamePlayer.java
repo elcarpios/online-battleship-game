@@ -43,8 +43,16 @@ public class GamePlayer {
         return player;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public Game getGame() {
         return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public Set<Ship> getShips() {
