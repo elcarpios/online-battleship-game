@@ -31,14 +31,14 @@ public class SalvoController {
         return dto;
     }
 
-    public Map<String,Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
+    private Map<String,Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",gamePlayer.getId());
         dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }
 
-    public Map<String,Object> makePlayerDTO(Player player) {
+    private Map<String,Object> makePlayerDTO(Player player) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id",player.getId());
         dto.put("email",player.getUserName());
@@ -99,16 +99,30 @@ public class SalvoController {
                 .map(gp-> makeGamePlayerDTO(gp)) // For each gamePlayer(gp) we send it to the function
                 .collect(Collectors.toList()));
         dto.put("ships", MakeShipsDTO(gamePlayer.getShips()));
+        dto.put("salvoes", gamePlayer.getGame().getGameplayers()
+                .stream()
+                .map(gp-> MakeSalvoesDTO(gp.getSalvoes())) // For each gamePlayer(gp) we send it to the function
+                .collect(Collectors.toList()));
         return dto;
     }
 
-    public List<Object> MakeShipsDTO(Set<Ship> ships) {
+    private List<Object> MakeShipsDTO(Set<Ship> ships) {
         List<Object> dto = new ArrayList<>();
         for(Ship ship : ships){
             Map<String,Object> eachShip = new HashMap<>();
             eachShip.put("Type", ship.getType());
             eachShip.put("Locations", ship.getLocations());
             dto.add(eachShip);
+        }
+        return dto;
+    }
+
+    private List<Object> MakeSalvoesDTO(Set<Salvo> salvoes) {
+        List<Object> dto = new ArrayList<>();
+        for(Salvo salvo : salvoes){
+            Map<Long,List> eachPlayer = new HashMap<>();
+            eachPlayer.put(salvo.getGameplayer().getPlayer().getId(),salvo.getLocations());
+            dto.add(eachPlayer);
         }
         return dto;
     }

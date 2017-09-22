@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	//let urlJson = 'data.json';
-	let urlJson =  ' /api/game_view/' + urlParameters.gp;
+	let urlJson = 'data.json';
+	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	getJsonAndStartFunctions(urlJson);	
 });
 
@@ -24,14 +24,25 @@ function getJsonAndStartFunctions(url) {
 }
 
 function startFunctions(data) {
+	
+	// Define the prefixes for duplicate values, like coordinades in grid
+	
 	infoPlayerConstructor(data.gamePlayers);
-	gridConstructor(10,10);
-	setShipsOnGrid(data.ships);
+	let ownPrefix = 'own-';
+	let opositePrefix = 'op-';
+	
+	var ownGrid = gridConstructor('ownGrid',10,10,ownPrefix);
+	document.body.appendChild(ownGrid);
+	setShipsOnGrid(ownPrefix, data.ships);
+	
+	var oppositeGrid = gridConstructor('oppositeGrid',10,10,opositePrefix);
+	document.body.appendChild(oppositeGrid);
 }
 
 function infoPlayerConstructor(players) {
 	let urlParameters = paramObj(window.location.href);
-	var id = urlParameters.gp;
+	//var id = urlParameters.gp;
+	var id = 1;
 	let infoPlayer = document.createElement('div');
 	
 	for(let i=0; i<players.length; i++) {
@@ -47,9 +58,10 @@ function infoPlayerConstructor(players) {
 	document.body.appendChild(infoPlayer);
 }
 
-function gridConstructor(col,row) {
+function gridConstructor(idDiv,col,row,cellIdPrefix) {
 	// Create the grid
 	let grid = document.createElement('div');
+	grid.id = idDiv;
 	grid.className = 'grid';
 	
 	
@@ -80,7 +92,7 @@ function gridConstructor(col,row) {
 		
 		// If is not a header we add an ID
 		if(!gridItem.classList.contains('grid-header')) {
-			gridItem.id = letterIndicators[colIdIndicator] + rowIdIndicator.toString();
+			gridItem.id = cellIdPrefix + letterIndicators[colIdIndicator] + rowIdIndicator.toString();
 			
 			// Calculate the new indicator
 			colIdIndicator += 1;
@@ -92,22 +104,23 @@ function gridConstructor(col,row) {
 		
 		grid.appendChild(gridItem);
 	}
-	document.body.appendChild(grid);
+	
+	return grid;
 }
 
 
-function setShipsOnGrid(ships) {
+function setShipsOnGrid(prefix,ships) {
 
 	for(let i=0; i<ships.length; i++) {
 		let ship = ships[i];
 		switch (ship.Type) {
 			
-		case 'Destroyer': 	implementClasses(' destroyer',ship.Locations);	
+		case 'Destroyer': 	implementClasses(prefix,' destroyer',ship.Locations);	
 												break;
 				
-		case 'Submarine':		implementClasses(' submarine',ship.Locations);	
+		case 'Submarine':		implementClasses(prefix,' submarine',ship.Locations);	
 												break;
-		case 'Patrol Boat': implementClasses(' patrol-boat',ship.Locations);
+		case 'Patrol Boat': implementClasses(prefix,' patrol-boat',ship.Locations);
 												break;
 		default: 						alert('Type ship doesnt match');
 												break;
@@ -115,9 +128,9 @@ function setShipsOnGrid(ships) {
 	}
 }
 
-function implementClasses(classes, array) {
+function implementClasses(prefix,classes, array) {
 	for(let j=0; j<array.length; j++) {
-	let gridItem = document.getElementById(array[j]);
+	let gridItem = document.getElementById(prefix + array[j]);
 	gridItem.className += ' ' + classes;
 	} 
 }

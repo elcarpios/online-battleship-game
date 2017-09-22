@@ -1,7 +1,6 @@
 package salvo.salvo;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.time.Instant;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootApplication // Tells Spring to look for cases in the code that need instances of bean
 public class SalvoApplication {
@@ -23,7 +20,8 @@ public class SalvoApplication {
 	public CommandLineRunner newPlayer(PlayerRepository playerRepo,
 									   GameRepository gameRepo,
 									   GamePlayerRepository gamePlayerRepo,
-									   ShipRepository shipRepo) {
+									   ShipRepository shipRepo,
+									   SalvoRepository salvoRepo) {
 		return (args) -> {
 
 			// Create players
@@ -112,6 +110,30 @@ public class SalvoApplication {
 			shipRepo.save(destroyer4);
 			shipRepo.save(patrolBoat4);
 
+
+			// Create Salvoes
+
+			// Game 1 - Turn 1
+			Salvo salvo1 = new Salvo(1, new ArrayList<>(Arrays.asList("B5","C5","F1")),gP1);
+			salvoRepo.save(salvo1);
+			Salvo salvo2 = new Salvo(1, new ArrayList<>(Arrays.asList("B4","B5","B6")),gP2);
+			salvoRepo.save(salvo2);
+			// Game 1 - Turn 2
+			Salvo salvo3 = new Salvo(2, new ArrayList<>(Arrays.asList("F2","D5")),gP1);
+			salvoRepo.save(salvo3);
+			Salvo salvo4 = new Salvo(2, new ArrayList<>(Arrays.asList("E1","H3","A2")),gP2);
+			salvoRepo.save(salvo4);
+
+			// Game 2 - Turn 1
+			Salvo salvo5 = new Salvo(1, new ArrayList<>(Arrays.asList("G6","H6","A4")),gP4);
+			salvoRepo.save(salvo5);
+			Salvo salvo6 = new Salvo(1, new ArrayList<>(Arrays.asList("H1","H2","H3")),gP3);
+			salvoRepo.save(salvo6);
+			// Game 2 - Turn 2
+			Salvo salvo7 = new Salvo(2, new ArrayList<>(Arrays.asList("A2","A3","D8")),gP4);
+			salvoRepo.save(salvo7);
+			Salvo salvo8 = new Salvo(2, new ArrayList<>(Arrays.asList("E1","F2","G3")),gP3);
+			salvoRepo.save(salvo8);
 		};
 	}
 }
