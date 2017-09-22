@@ -120,9 +120,7 @@ public class SalvoController {
     private List<Object> MakeSalvoesDTO(Set<Salvo> salvoes) {
         List<Object> dto = new ArrayList<>();
         for(Salvo salvo : salvoes){
-            Map<Long,List> eachPlayer = new HashMap<>();
-            eachPlayer.put(salvo.getGameplayer().getPlayer().getId(),salvo.getLocations());
-            dto.add(eachPlayer);
+            dto.add(salvo.getLocations());
         }
         return dto;
     }

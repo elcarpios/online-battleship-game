@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	let urlJson = 'data.json';
-	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
+	//let urlJson = 'data.json';
+	let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	getJsonAndStartFunctions(urlJson);	
 });
 
@@ -26,23 +26,29 @@ function getJsonAndStartFunctions(url) {
 function startFunctions(data) {
 	
 	// Define the prefixes for duplicate values, like coordinades in grid
-	
-	infoPlayerConstructor(data.gamePlayers);
 	let ownPrefix = 'own-';
+	let ownTurnsSalvoes = data.salvoes[1];
+	
 	let opositePrefix = 'op-';
+	let opositeTurnsSalvoes = data.salvoes[0];
+
+	infoPlayerConstructor(data.gamePlayers);
+	
 	
 	var ownGrid = gridConstructor('ownGrid',10,10,ownPrefix);
 	document.body.appendChild(ownGrid);
 	setShipsOnGrid(ownPrefix, data.ships);
+	setSalvoesOnGrid(ownPrefix, ownTurnsSalvoes);
 	
 	var oppositeGrid = gridConstructor('oppositeGrid',10,10,opositePrefix);
 	document.body.appendChild(oppositeGrid);
+	setSalvoesOnGrid(opositePrefix, opositeTurnsSalvoes);
 }
 
 function infoPlayerConstructor(players) {
 	let urlParameters = paramObj(window.location.href);
-	//var id = urlParameters.gp;
-	var id = 1;
+	var id = urlParameters.gp;
+	//var id = 1;
 	let infoPlayer = document.createElement('div');
 	
 	for(let i=0; i<players.length; i++) {
@@ -135,3 +141,15 @@ function implementClasses(prefix,classes, array) {
 	} 
 }
 
+function setSalvoesOnGrid(prefix, turns) {
+	// Go throw all the turns
+	for (var i=0; i<turns.length; i++) {
+		let salvoes = turns[i];
+		for (let j=0; j<salvoes.length; j++) {
+			let salvo = salvoes[j];
+			let salvoCell = document.getElementById(prefix + salvo);
+			salvoCell.className += ' bombed';
+			salvoCell.innerHTML = i + 1;
+		}
+	}
+}
