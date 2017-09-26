@@ -3,6 +3,10 @@
 	--row-number: 11;
 }
 
+.water {
+	background-color: dodgerblue;
+}
+
 .grid {
 	display: grid;
 	justify-content: center;
@@ -15,6 +19,10 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.grid-header {
+	background-color: white;
 }
 
 .bold {

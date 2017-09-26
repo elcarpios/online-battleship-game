@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	//let urlJson = 'data.json';
-	let urlJson =  ' /api/game_view/' + urlParameters.gp;
+	let urlJson = 'data.json';
+	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	getJsonAndStartFunctions(urlJson);	
 });
 
@@ -33,7 +33,7 @@ function startFunctions(data) {
 	let opositeTurnsSalvoes = data.salvoes[0];
 
 	infoPlayerConstructor(data.gamePlayers);
-	
+	console.log(data);
 	
 	var ownGrid = gridConstructor('ownGrid',10,10,ownPrefix);
 	document.body.appendChild(ownGrid);
@@ -47,8 +47,8 @@ function startFunctions(data) {
 
 function infoPlayerConstructor(players) {
 	let urlParameters = paramObj(window.location.href);
-	var id = urlParameters.gp;
-	//var id = 1;
+	//var id = urlParameters.gp;
+	var id = 1;
 	let infoPlayer = document.createElement('div');
 	
 	for(let i=0; i<players.length; i++) {
@@ -148,7 +148,15 @@ function setSalvoesOnGrid(prefix, turns) {
 		for (let j=0; j<salvoes.length; j++) {
 			let salvo = salvoes[j];
 			let salvoCell = document.getElementById(prefix + salvo);
-			salvoCell.className += ' bombed';
+			let classesCell = salvoCell.classList;
+			if((classesCell.value.indexOf('destroyer') != -1) ||
+				(classesCell.value.indexOf('submarine') != -1) ||
+				(classesCell.value.indexOf('patrol-boat') != -1)) {
+				salvoCell.className += ' bombed';
+			}
+			else {
+				salvoCell.className += ' water';
+			}
 			salvoCell.innerHTML = i + 1;
 		}
 	}
