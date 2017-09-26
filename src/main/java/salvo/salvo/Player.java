@@ -20,6 +20,10 @@ public class Player {
     // Set<Type> is a group of elements with this type
     Set<GamePlayer> gameplayers;
 
+    // 1 player can has n socres
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    Set<Score> scores;
+
     public Player() { } // We need an empty constructor for the internal uses
 
     public Player(String name, String userName, String password) {

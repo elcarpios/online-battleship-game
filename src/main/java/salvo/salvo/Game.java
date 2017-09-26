@@ -20,6 +20,10 @@ public class Game {
     // Set<Type> is a group of elements with this type
     Set<GamePlayer> gameplayers;
 
+    // 1 game has 2 scores
+    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    Set<Score> scores;
+
     public Game() {
         creationDate = new Date();
     }
