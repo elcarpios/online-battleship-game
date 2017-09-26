@@ -1,6 +1,7 @@
 package salvo.salvo;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 // @SomeWord order, is only affecting at the next line of code
@@ -50,5 +51,28 @@ public class Player {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setGameplayers(Set<GamePlayer> gameplayers) {
+        this.gameplayers = gameplayers;
+    }
+
+    public Set<Score> getScores() {
+        return scores;
+    }
+
+    public Score getScore(Game game) {
+        return this.getScores().stream()
+                        .filter(score -> score.getGame().equals(game))
+                        .findFirst()
+                        .orElse(null);
     }
 }

@@ -21,119 +21,116 @@ public class SalvoApplication {
 									   GameRepository gameRepo,
 									   GamePlayerRepository gamePlayerRepo,
 									   ShipRepository shipRepo,
-									   SalvoRepository salvoRepo) {
+									   SalvoRepository salvoRepo,
+									   ScoreRepository scoreRepo) {
 		return (args) -> {
 
 			// Create players
 			Player p1 = new Player("Jack Bauer","j.bauer@ctu.gov","24");
-			playerRepo.save(p1);
-
 			Player p2 = new Player("Chloe O'Brian","c.obrian@ctu.gov","42");
-			playerRepo.save(p2);
-
 			Player p3 = new Player("Kim Bauer","kim_bauer@gmail.com","kb");
-			playerRepo.save(p3);
-
 			Player p4 = new Player("Tony Almeida","t.almeida@ctu.gov","mole");
-			playerRepo.save(p4);
+
 
 			// Create games
-			Game g1 = new Game();
-			gameRepo.save(g1);
-			Game g2 = new Game();
 			Date date = new Date();
+
+			Game g1 = new Game();
+			Game g2 = new Game();
 			g2.setCreationDate(Date.from(date.toInstant().plusSeconds(3600)));
-			gameRepo.save(g2);
 			Game g3 = new Game();
 			g3.setCreationDate(Date.from(date.toInstant().plusSeconds(7200)));
-			gameRepo.save(g3);
 
 
-			// Create GamePlayer(s) and Ships
-
-
-			// Create GamePlayer 1
+			// Create GamePlayer(s)
 			GamePlayer gP1 = new GamePlayer(g1,p1);
-			gamePlayerRepo.save(gP1);
+			GamePlayer gP2 = new GamePlayer(g1,p2);
+			GamePlayer gP3 = new GamePlayer(g2,p4);
+			GamePlayer gP4 = new GamePlayer(g2,p1);
+
+
 			// Create Ships
 			Ship destroyer1 = new Ship("Destroyer", new HashSet<>(Arrays.asList("H2","H3","H4")));
 			Ship submarine1 = new Ship("Submarine", new HashSet<>(Arrays.asList("E1","F1","G1")));
 			Ship patrolBoat1 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("B4","B5")));
-			// Add the ships
-			gP1.addShip(destroyer1);
-			gP1.addShip(submarine1);
-			gP1.addShip(patrolBoat1);
-			// Save the ships into the Repository
-			shipRepo.save(destroyer1);
-			shipRepo.save(submarine1);
-			shipRepo.save(patrolBoat1);
 
-
-			// Create GamePlayer 2
-			GamePlayer gP2 = new GamePlayer(g1,p2);
-			gamePlayerRepo.save(gP2);
-			// Create Ships
 			Ship destroyer2 = new Ship("Destroyer", new HashSet<>(Arrays.asList("B5","C5","D5")));
 			Ship patrolBoat2 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("F1","F2")));
-			// Add the ships
-			gP2.addShip(destroyer2);
-			gP2.addShip(patrolBoat2);
-			// Save the ships into the Repository
-			shipRepo.save(destroyer2);
-			shipRepo.save(patrolBoat2);
 
-
-			// Create GamePlayer 3
-			GamePlayer gP3 = new GamePlayer(g2,p4);
-			gamePlayerRepo.save(gP3);
-			// Create Ships
 			Ship destroyer3 = new Ship("Destroyer", new HashSet<>(Arrays.asList("B5","C5","D5")));
 			Ship patrolBoat3 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("C6","C7")));
-			// Add the ships
-			gP3.addShip(destroyer3);
-			gP3.addShip(patrolBoat3);
-			// Save the ships into the Repository
-			shipRepo.save(destroyer3);
-			shipRepo.save(patrolBoat3);
 
-
-			// Create GamePlayer 4
-			GamePlayer gP4 = new GamePlayer(g2,p1);
-			gamePlayerRepo.save(gP4);
-			// Create Ships
 			Ship destroyer4 = new Ship("Destroyer", new HashSet<>(Arrays.asList("A2","A3","A4")));
 			Ship patrolBoat4 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("G6","H6")));
-			// Add the ships
-			gP4.addShip(destroyer4);
-			gP4.addShip(patrolBoat4);
-			// Save the ships into the Repository
-			shipRepo.save(destroyer4);
-			shipRepo.save(patrolBoat4);
 
 
 			// Create Salvoes
-
-			// Game 1 - Turn 1
 			Salvo salvo1 = new Salvo(1, new ArrayList<>(Arrays.asList("B5","C5","F1")),gP1);
-			salvoRepo.save(salvo1);
 			Salvo salvo2 = new Salvo(1, new ArrayList<>(Arrays.asList("B4","B5","B6")),gP2);
-			salvoRepo.save(salvo2);
-			// Game 1 - Turn 2
 			Salvo salvo3 = new Salvo(2, new ArrayList<>(Arrays.asList("F2","D5")),gP1);
-			salvoRepo.save(salvo3);
 			Salvo salvo4 = new Salvo(2, new ArrayList<>(Arrays.asList("E1","H3","A2")),gP2);
-			salvoRepo.save(salvo4);
 
-			// Game 2 - Turn 1
 			Salvo salvo5 = new Salvo(1, new ArrayList<>(Arrays.asList("G6","H6","A4")),gP4);
-			salvoRepo.save(salvo5);
 			Salvo salvo6 = new Salvo(1, new ArrayList<>(Arrays.asList("H1","H2","H3")),gP3);
-			salvoRepo.save(salvo6);
-			// Game 2 - Turn 2
 			Salvo salvo7 = new Salvo(2, new ArrayList<>(Arrays.asList("A2","A3","D8")),gP4);
-			salvoRepo.save(salvo7);
 			Salvo salvo8 = new Salvo(2, new ArrayList<>(Arrays.asList("E1","F2","G3")),gP3);
+
+
+			// Create Scores
+			Score s1 = new Score(3, new Date(), g1, p1);
+			Score s2 = new Score(0, new Date(), g1, p2);
+			Score s3 = new Score(0, new Date(), g2, p1);
+			Score s4 = new Score(3, new Date(), g2, p4);
+
+
+			//Save ALL
+			playerRepo.save(p1);
+			playerRepo.save(p2);
+			playerRepo.save(p3);
+			playerRepo.save(p4);
+
+			gameRepo.save(g1);
+			gameRepo.save(g2);
+			gameRepo.save(g3);
+
+			gP1.addShip(destroyer1);
+			gP1.addShip(submarine1);
+			gP1.addShip(patrolBoat1);
+			gP2.addShip(destroyer2);
+			gP2.addShip(patrolBoat2);
+			gP3.addShip(destroyer3);
+			gP3.addShip(patrolBoat3);
+			gP4.addShip(destroyer4);
+			gP4.addShip(patrolBoat4);
+
+			gamePlayerRepo.save(gP1);
+			gamePlayerRepo.save(gP2);
+			gamePlayerRepo.save(gP3);
+			gamePlayerRepo.save(gP4);
+
+			shipRepo.save(destroyer1);
+			shipRepo.save(submarine1);
+			shipRepo.save(patrolBoat1);
+			shipRepo.save(destroyer2);
+			shipRepo.save(patrolBoat2);
+			shipRepo.save(destroyer3);
+			shipRepo.save(patrolBoat3);
+			shipRepo.save(destroyer4);
+			shipRepo.save(patrolBoat4);
+
+			salvoRepo.save(salvo1);
+			salvoRepo.save(salvo2);
+			salvoRepo.save(salvo3);
+			salvoRepo.save(salvo4);
+			salvoRepo.save(salvo5);
+			salvoRepo.save(salvo6);
+			salvoRepo.save(salvo7);
 			salvoRepo.save(salvo8);
+
+			scoreRepo.save(s1);
+			scoreRepo.save(s2);
+			scoreRepo.save(s3);
+			scoreRepo.save(s4);
 		};
 	}
 }
