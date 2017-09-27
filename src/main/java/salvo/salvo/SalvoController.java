@@ -89,7 +89,8 @@ public class SalvoController {
         List<Player> players = playerRepo.findAll();
         for(Player player : players) {
             Map<String,Object> dtoScore = new HashMap<>();
-            dtoScore.put(player.getUserName(), makeScoresDTO(player.getScores()));
+            dtoScore.put("user",player.getUserName());
+            dtoScore.put("scores", makeScoresDTO(player.getScores()));
             dto.add(dtoScore);
         }
         return dto;
