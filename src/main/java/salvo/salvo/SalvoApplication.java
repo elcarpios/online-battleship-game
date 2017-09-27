@@ -77,10 +77,11 @@ public class SalvoApplication {
 
 
 			// Create Scores
-			Score s1 = new Score(3, new Date(), g1, p1);
+			Score s1 = new Score(1, new Date(), g1, p1);
 			Score s2 = new Score(0, new Date(), g1, p2);
 			Score s3 = new Score(0, new Date(), g2, p1);
-			Score s4 = new Score(3, new Date(), g2, p4);
+			Score s4 = new Score(1, new Date(), g2, p4);
+			Score s5 = new Score(0.5, new Date(), g3, p1);
 
 
 			//Save ALL
@@ -131,6 +132,7 @@ public class SalvoApplication {
 			scoreRepo.save(s2);
 			scoreRepo.save(s3);
 			scoreRepo.save(s4);
+			scoreRepo.save(s5);
 		};
 	}
 }

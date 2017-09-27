@@ -75,4 +75,8 @@ public class GamePlayer {
     public Set<Salvo> getSalvoes() {
         return salvoes;
     }
+
+    public Score getScore() {
+        return this.player.getScore(this.game);
+    }
 }

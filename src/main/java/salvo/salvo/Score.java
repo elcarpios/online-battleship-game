@@ -10,7 +10,7 @@ public class Score {
     @GeneratedValue(strategy= GenerationType.AUTO) // Tells JPA to get the Id from the DBMS.
     private long id;
 
-    private int score;
+    private double score;
 
     private Date finishDate;
 
@@ -24,7 +24,7 @@ public class Score {
     @JoinColumn(name="player_id")
     private Player player;
 
-    public Score(int score, Date finishDate, Game game, Player player) {
+    public Score(double score, Date finishDate, Game game, Player player) {
         this.score = score;
         this.finishDate = finishDate;
         this.game = game;
@@ -37,7 +37,7 @@ public class Score {
         return id;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 

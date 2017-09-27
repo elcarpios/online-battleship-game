@@ -48,6 +48,13 @@ public class SalvoController {
         return dto;
     }
 
+
+    public List<Long> getId() {
+        return gameRepo.findAll().stream()
+                .map(game -> game.getId())
+                .collect(Collectors.toList());
+    }
+
     /* // Create a new List <Map> to store de info about gamePlayers
             List<Map> gamePlayersInfo =  new ArrayList<Map>();
             List<Long> gamePlayersIds = new ArrayList<Long>();
@@ -57,12 +64,6 @@ public class SalvoController {
             eachGame.put("gamePlayers",gamePlayersIds);
 
             */
-    public List<Long> getId() {
-        return gameRepo.findAll().stream()
-                .map(game -> game.getId())
-                .collect(Collectors.toList());
-    }
-
      /* FIRST VERSION OF GETID
     @RequestMapping("/games") // Call getAll() when a GET for the URL /games is received
     public List<Long> getId() {
@@ -79,12 +80,48 @@ public class SalvoController {
         return gameRepo.findAll();
     }*/
 
-    /* STOPPED by the moment
-    private Map<String,Object> getAllMap() {
-        return (Map<String, Object>) gameRepo.findAll();
-    }*/
+    @Autowired
+    private PlayerRepository playerRepo;
 
+    @RequestMapping(value = "/leaderboard")
+    public List<Object> makeleaderboardDTO() {
+        List<Object> dto = new ArrayList<>();
+        List<Player> players = playerRepo.findAll();
+        for(Player player : players) {
+            Map<String,Object> dtoScore = new HashMap<>();
+            dtoScore.put(player.getUserName(), makeScoresDTO(player.getScores()));
+            dto.add(dtoScore);
+        }
+        return dto;
+    }
 
+    public Map<String,Double> makeScoresDTO(Set<Score> scores) {
+        Map<String,Double> dto = new HashMap<>();
+        Double total = 0.0;
+        Double win = 0.0;
+        Double lost = 0.0;
+        Double draw = 0.0;
+
+        for(Score score : scores) {
+            Double points = score.getScore();
+            switch (points.toString()) {
+                case "0.0": lost++;
+                break;
+                case "0.5": draw++;
+                break;
+                case "1.0": win++;
+                break;
+                default:
+                    break;
+            }
+            total += points;
+        }
+        dto.put("total", total);
+        dto.put("win(s)", win);
+        dto.put("draw(s)", draw);
+        dto.put("lost(s)", lost);
+        return dto;
+    }
 
 
     // Method to Return DTO with GamePlayer Information
