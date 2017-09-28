@@ -2,10 +2,23 @@ package salvo.salvo;
 
 import java.util.*;
 import java.time.Instant;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDate;
 
@@ -138,3 +151,55 @@ public class SalvoApplication {
 }
 
 // To ignore instances of methods in Spring we use @JsonIgnore
+
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+	@Autowired
+	PlayerRepository playerRepo;
+
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService());
+	}
+
+	@Bean
+	UserDetailsService userDetailsService() {
+		return new UserDetailsService() {
+
+			@Override
+			public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+				List<Player> players = playerRepo.findByUserName(name);
+				if (!players.isEmpty()) {
+					Player player = players.get(0);
+					return new User(player.getUserName(), player.getPassword(),
+							AuthorityUtils.createAuthorityList("USER"));
+				} else {
+					throw new UsernameNotFoundException("Unknown user: " + name);
+				}
+			}
+		};
+	}
+}
+
+@EnableWebSecurity
+@Configuration
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+				.antMatchers("/admin/**").hasAuthority("ADMIN")
+				.antMatchers("/**").hasAuthority("USER")
+				.and()
+				.formLogin();
+				/*	.usernameParameter("name")
+					.passwordParameter("pwd")
+					.loginPage("/app/login");
+
+		http.logout().logoutUrl("/app/logout");*/
+	}
+}
+
+// TODO: https://ubiqum.socraticarts.com/ebooks/item?id=1436 -> Configuring Security for Web Services
+
+// TODO: Test! POINT 3
