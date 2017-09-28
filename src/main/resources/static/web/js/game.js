@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	let urlJson = 'data.json';
+	let urlJson = 'gamedata.json';
 	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	getJsonAndStartFunctions(urlJson);	
 });

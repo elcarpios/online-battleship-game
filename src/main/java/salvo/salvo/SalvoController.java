@@ -84,15 +84,29 @@ public class SalvoController {
     private PlayerRepository playerRepo;
 
     @RequestMapping(value = "/leaderboard")
-    public List<Object> makeleaderboardDTO() {
-        List<Object> dto = new ArrayList<>();
+    public List<Map<String,Object>> makeleaderboardDTO() {
+        List<Map<String,Object>> dto = new ArrayList<>();
         List<Player> players = playerRepo.findAll();
         for(Player player : players) {
-            Map<String,Object> dtoScore = new HashMap<>();
-            dtoScore.put("user",player.getUserName());
-            dtoScore.put("scores", makeScoresDTO(player.getScores()));
-            dto.add(dtoScore);
+            Map<String,Object> dtoPlayer = new HashMap<>();
+            Map<String,Double> dtoScore = makeScoresDTO(player.getScores());
+
+            dtoPlayer.put("user",player.getUserName());
+            dtoPlayer.put("total", dtoScore.get("total"));
+            dtoPlayer.put("win", dtoScore.get("win").intValue());
+            dtoPlayer.put("draw", dtoScore.get("draw").intValue());
+            dtoPlayer.put("lost", dtoScore.get("lost").intValue());
+            dto.add(dtoPlayer);
         }
+
+        dto.sort((a,b) -> {
+            if((Double)a.get("total") > (Double)b.get("total")) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        });
         return dto;
     }
 
@@ -118,9 +132,9 @@ public class SalvoController {
             total += points;
         }
         dto.put("total", total);
-        dto.put("win(s)", win);
-        dto.put("draw(s)", draw);
-        dto.put("lost(s)", lost);
+        dto.put("win", win);
+        dto.put("draw", draw);
+        dto.put("lost", lost);
         return dto;
     }
 
