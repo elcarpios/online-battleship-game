@@ -1,0 +1,70 @@
+{
+  "id": 1,
+  "created": 1506082683556,
+  "gamePlayers": [
+    {
+      "id": 2,
+      "player": {
+        "id": 2,
+        "email": "c.obrian@ctu.gov"
+      }
+    },
+    {
+      "id": 1,
+      "player": {
+        "id": 1,
+        "email": "j.bauer@ctu.gov"
+      }
+    }
+  ],
+  "ships": [
+    {
+      "Type": "Submarine",
+      "Locations": [
+        "G1",
+        "F1",
+        "E1"
+      ]
+    },
+    {
+      "Type": "Patrol Boat",
+      "Locations": [
+        "B4",
+        "B5"
+      ]
+    },
+    {
+      "Type": "Destroyer",
+      "Locations": [
+        "H2",
+        "H3",
+        "H4"
+      ]
+    }
+  ],
+  "salvoes": [
+    [
+      [
+        "E1",
+        "H3",
+        "A2"
+      ],
+      [
+        "B4",
+        "B5",
+        "B6"
+      ]
+    ],
+    [
+      [
+        "F2",
+        "D5"
+      ],
+      [
+        "B5",
+        "C5",
+        "F1"
+      ]
+    ]
+  ]
+}
