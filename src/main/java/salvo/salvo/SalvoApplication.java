@@ -188,15 +188,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/admin/**").hasAuthority("ADMIN")
-				.antMatchers("/**").hasAuthority("USER")
+				.antMatchers("/api/**").hasAuthority("ADMIN")
+				.antMatchers("/rest/**").hasAuthority("ADMIN")
+				.antMatchers("/web/**").permitAll()
 				.and()
 				.formLogin();
-				/*	.usernameParameter("name")
-					.passwordParameter("pwd")
-					.loginPage("/app/login");
-
-		http.logout().logoutUrl("/app/logout");*/
 	}
 }
 
