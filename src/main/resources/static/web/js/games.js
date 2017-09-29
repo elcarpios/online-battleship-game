@@ -1,23 +1,34 @@
 $(document).ready(function() {
   urlJson = 'http://localhost:8080/api/games';
+  //urlJson = 'gamesdata.json';
   getJsonAndStartFunctions(urlJson);
 });
 
 function getJsonAndStartFunctions(url) {
 	$.getJSON(url, function (data) {
-	    console.log(data);
-		startFunctions(data.game);
+		startFunctions(data);
 	});
 }
 
 function startFunctions(data) {
-	let gameList = createGameList(data);
+	let playerInfo = createPlayerInfo(data.player);
+	document.body.appendChild(playerInfo);
+	
+	let gameList = createGameList(data.game);
 	document.body.appendChild(gameList);
 }
+
+function createPlayerInfo(data) {
+	let p = document.createElement('p');
+	p.innerHTML = 'ID: ' + data.id + ' / User: ' + data.name;
+	return p;
+}
+
 
 function createGameList(data) {
 	// Create the ordered list
   let ol = document.createElement('ol');
+	ol.innerHTML = 'Games:';
 	
 	// Go throw all the JSON Data
   for(let i=0; i<data.length; i++) {
