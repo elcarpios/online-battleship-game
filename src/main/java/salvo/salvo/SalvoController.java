@@ -1,6 +1,11 @@
 package salvo.salvo;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -16,6 +21,27 @@ public class SalvoController {
     private GameRepository gameRepo;
 
     @RequestMapping("/games") // Call getAll() when a GET for the URL /games is received
+    public Map<String,Object> makeUserGameDTO(Authentication authentication) {
+        Map<String,Object> dto = new HashMap<>();
+        if(!isGuest(authentication)) {
+            Player currentUser = playerRepo.findByUserName(authentication.getName()).get(0);
+            dto.put("player", makeUserDTO(currentUser));
+        }
+        dto.put("game", makeGameDTO());
+        return dto;
+    }
+
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    }
+
+    public Map<String,Object> makeUserDTO(Player user) {
+        Map<String,Object> dto = new HashMap<>();
+        dto.put("id", user.getId());
+        dto.put("name", user.getUserName());
+        return dto;
+    }
+
     public List<Object> makeGameDTO() {
         List<Game> games = gameRepo.findAll();
         List<Object> dto = new ArrayList<Object>(); // dto = Data Transfer Object
@@ -179,4 +205,5 @@ public class SalvoController {
         }
         return dto;
     }
+
 }

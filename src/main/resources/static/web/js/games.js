@@ -5,7 +5,8 @@ $(document).ready(function() {
 
 function getJsonAndStartFunctions(url) {
 	$.getJSON(url, function (data) {
-		startFunctions(data);
+	    console.log(data);
+		startFunctions(data.game);
 	});
 }
 
