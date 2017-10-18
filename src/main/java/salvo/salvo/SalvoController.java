@@ -20,6 +20,12 @@ public class SalvoController {
     @Autowired // Skip configurations elsewhere of what to inject and just does it for you
     private GameRepository gameRepo;
 
+    @Autowired
+    private PlayerRepository playerRepo;
+
+    @Autowired // Skip configurations elsewhere of what to inject and just does it for you
+    private GamePlayerRepository gamePlayerRepo;
+
     @RequestMapping("/games") // Call getAll() when a GET for the URL /games is received
     public Map<String,Object> makeUserGameDTO(Authentication authentication) {
         Map<String,Object> dto = new HashMap<>();
@@ -50,7 +56,7 @@ public class SalvoController {
             eachGame.put("id",game.getId());
             eachGame.put("created",game.getCreationDate());
             eachGame.put("gamePlayers", game.getGameplayers().stream()
-                    .map(gamePlayer -> makeGamePlayerDTO(gamePlayer))
+                    .map(this::makeGamePlayerDTO)
                     .collect(Collectors.toList()));
             dto.add(eachGame);
         }
@@ -81,33 +87,6 @@ public class SalvoController {
                 .collect(Collectors.toList());
     }
 
-    /* // Create a new List <Map> to store de info about gamePlayers
-            List<Map> gamePlayersInfo =  new ArrayList<Map>();
-            List<Long> gamePlayersIds = new ArrayList<Long>();
-            gamePlayersIds = gameRepo.findAll().stream()
-                    .map(gamePlayers -> gamePlayers.getId())
-                    .collect(Collectors.toList());
-            eachGame.put("gamePlayers",gamePlayersIds);
-
-            */
-     /* FIRST VERSION OF GETID
-    @RequestMapping("/games") // Call getAll() when a GET for the URL /games is received
-    public List<Long> getId() {
-    List<Game> games = gameRepo.findAll();
-    List<Long> ids = new ArrayList<Long>();
-    for (Game game : games) {
-        long id = game.getId();
-        ids.add(id);
-    }
-    return ids;*/
-
-    /* RETURN a list of games
-    public List<Game> getAll() {
-        return gameRepo.findAll();
-    }*/
-
-    @Autowired
-    private PlayerRepository playerRepo;
 
     @RequestMapping(value = "/leaderboard")
     public List<Map<String,Object>> makeleaderboardDTO() {
@@ -166,9 +145,6 @@ public class SalvoController {
 
 
     // Method to Return DTO with GamePlayer Information
-    @Autowired // Skip configurations elsewhere of what to inject and just does it for you
-    private GamePlayerRepository gamePlayerRepo;
-
     @RequestMapping(value = "/game_view/{id}")
     public Map<String,Object> makeGamePlayerDTO(@PathVariable("id") long id) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(id);
@@ -177,28 +153,33 @@ public class SalvoController {
         dto.put("created",gamePlayer.getGame().getCreationDate());
         dto.put("gamePlayers", gamePlayer.getGame().getGameplayers()
                 .stream()
-                .map(gp-> makeGamePlayerDTO(gp)) // For each gamePlayer(gp) we send it to the function
+                .map(this::makeGamePlayerDTO) // For each gamePlayer(gp) we send it to the function
                 .collect(Collectors.toList()));
-        dto.put("ships", MakeShipsDTO(gamePlayer.getShips()));
+        dto.put("ships", makeShipsDTO(gamePlayer.getShips()));
         dto.put("salvoes", gamePlayer.getGame().getGameplayers()
                 .stream()
-                .map(gp-> MakeSalvoesDTO(gp.getSalvoes())) // For each gamePlayer(gp) we send it to the function
+                .map(gp-> makeSalvoesDTO(gp.getSalvoes())) // For each gamePlayer(gp) we send it to the function
                 .collect(Collectors.toList()));
         return dto;
     }
 
-    private List<Object> MakeShipsDTO(Set<Ship> ships) {
-        List<Object> dto = new ArrayList<>();
-        for(Ship ship : ships){
-            Map<String,Object> eachShip = new HashMap<>();
-            eachShip.put("Type", ship.getType());
-            eachShip.put("Locations", ship.getLocations());
-            dto.add(eachShip);
-        }
-        return dto;
+    private List<Object> makeShipsDTO(Set<Ship> ships) {
+
+        return ships.stream()
+                .map(this::getShipDTO)
+                .collect(Collectors.toList());
     }
 
-    private List<Object> MakeSalvoesDTO(Set<Salvo> salvoes) {
+    private Map<String, Object> getShipDTO(Ship ship) {
+
+        Map<String,Object> shipDTO = new HashMap<>();
+        shipDTO.put("Type", ship.getType());
+        shipDTO.put("Locations", ship.getLocations());
+
+        return shipDTO;
+    }
+
+    private List<Object> makeSalvoesDTO(Set<Salvo> salvoes) {
         List<Object> dto = new ArrayList<>();
         for(Salvo salvo : salvoes){
             dto.add(salvo.getLocations());

@@ -199,7 +199,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
                 .formLogin()
                 .usernameParameter("name")
-                .passwordParameter("pwd")
+                .passwordParameter("password")
                 .loginPage("/api/login");
 
         http.logout().logoutUrl("/api/logout");
@@ -228,6 +228,4 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 }
 
-// TODO: https://ubiqum.socraticarts.com/ebooks/item?id=1436 -> Configuring Security for Web Services
-
-// TODO: Test! POINT 3
+// TODO: Test! POINT 5
