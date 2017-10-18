@@ -187,4 +187,25 @@ public class SalvoController {
         return dto;
     }
 
+    //TODO: FIX THAT DTO TO CREATE A NEW USER POINT 5
+    // Method to responds to a request to create a new player
+    @RequestMapping("/players")
+    public Map<String,String> createPlayer(String name, String password) {
+        if(!userExist(name)) {
+            Map<String, String> dto = new HashMap<>();
+            dto.put(name, password);
+            return dto;
+        }
+
+    }
+
+    private Boolean userExist(String name) {
+        List<Player> players = playerRepo.findAll();
+        for (Player player : players) {
+            if(player.getName() == name) {
+                return true;
+            }
+        }
+    }
+
 }
