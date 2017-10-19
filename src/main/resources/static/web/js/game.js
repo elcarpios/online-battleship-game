@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	let urlJson = 'gamedata.json';
-	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
+	//let urlJson = 'gamedata.json';
+	let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	getJsonAndStartFunctions(urlJson);	
 });
 
@@ -47,8 +47,8 @@ function startFunctions(data) {
 
 function infoPlayerConstructor(players) {
 	let urlParameters = paramObj(window.location.href);
-	//var id = urlParameters.gp;
-	var id = 1;
+	var id = urlParameters.gp;
+	//var id = 1;
 	let infoPlayer = document.createElement('div');
 	
 	for(let i=0; i<players.length; i++) {

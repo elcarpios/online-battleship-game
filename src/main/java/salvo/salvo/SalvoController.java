@@ -2,6 +2,8 @@ package salvo.salvo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -187,18 +189,22 @@ public class SalvoController {
         return dto;
     }
 
-    //TODO: FIX THAT DTO TO CREATE A NEW USER POINT 5
+    //TODO: METHOD TO CREATE A NEW USER WITH RESPONSE ENTITIES POINT 5
     // Method to responds to a request to create a new player
     @RequestMapping("/players")
-    public Map<String,String> createPlayer(String name, String password) {
-        if(!userExist(name)) {
-            Map<String, String> dto = new HashMap<>();
-            dto.put(name, password);
-            return dto;
+    public ResponseEntity<String> createPlayer(@RequestParam String name, @RequestParam String password) {
+        if (name.isEmpty()) {
+            return new ResponseEntity<>("No name given", HttpStatus.FORBIDDEN);
         }
-
+        if(playerRepo.findByName(name).size() == 0) {
+            Player newPlayer = new Player(name,"",password);
+            playerRepo.save(newPlayer);
+            return new ResponseEntity<>("Named added", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Name already used", HttpStatus.CONFLICT);
+        }
     }
-
+/*
     private Boolean userExist(String name) {
         List<Player> players = playerRepo.findAll();
         for (Player player : players) {
@@ -206,6 +212,6 @@ public class SalvoController {
                 return true;
             }
         }
-    }
+    }*/
 
 }
