@@ -10,15 +10,21 @@
 </head>
 
 <body>
-	<form id="login-form" onsubmit="return false">
+	<form id="login-form">
 		<label>Name: <input type="text" id="username"></label>
 		<label>Password: <input type="text" id="userpwd"></label>
-		<button id="login-button">Login</button>
+		<button type="button" id="login-button">Login</button>
 	</form>
 
+	<form id="logout-form">
+		<button type="button" id="logout-button">Log out</button>
+	</form>
+
+	<div id="content">
+		
+	</div>
+
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
-
-
 	</script>
 	<script type="text/javascript" src="js/games.js"></script>
 </body>

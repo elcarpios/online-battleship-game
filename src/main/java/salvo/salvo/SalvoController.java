@@ -189,7 +189,7 @@ public class SalvoController {
         return dto;
     }
 
-    //TODO: METHOD TO CREATE A NEW USER WITH RESPONSE ENTITIES POINT 5
+    //TODO: POINT 6 CREATE LOGOUT
     // Method to responds to a request to create a new player
     @RequestMapping("/players")
     //@RequestParam

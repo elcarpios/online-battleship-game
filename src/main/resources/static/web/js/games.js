@@ -1,6 +1,11 @@
 $(document).ready(function() {
 	
+	// Check if some user has authenticated
+	getJsonAndStartFunctions();
+	
+	// Set Logx Events
   setLoginForm();
+	setLogoutForm();
 	
 });
 
@@ -14,13 +19,22 @@ function setLoginForm() {
 	
 }
 
+function setLogoutForm() {
+	
+	let logoutForm = document.getElementById('logout-form');
+	let logoutButton = document.getElementById('logout-button');
+	
+	logoutButton.addEventListener('click',logout);
+	
+}
+
 
 function checkLogin() {
 	
-	let user = document.getElementById('username').value;
-	let pwd = document.getElementById('userpwd').value;
+	let user = document.getElementById('username');
+	let pwd = document.getElementById('userpwd');
 
-	if (isEmpty(user) && isEmpty(pwd)) {
+	if (isEmpty(user.value) && isEmpty(pwd.value)) {
 		login(user,pwd);
 	}
 	else {
@@ -31,13 +45,24 @@ function checkLogin() {
 
 function login(user, pwd) {
 	$.post('/api/login', 
-         { name: user,
-           password: pwd })
-   .done(function() {console.log("done"),getJsonAndStartFunctions()})
+         { name: user.value,
+           password: pwd.value })
+   .done(function() {
+			console.log("in"),
+			user.value = '',
+			pwd.value = '',
+			getJsonAndStartFunctions()})
    .fail(function() {alert('Username or password are wrong')});
 }
 
 
+function logout() {
+  $.post('/api/logout')
+   .done(function() {console.log("out");alert('You are logging out of your session');})
+   .fail(function() {alert('Some problem happened with logout');});
+}
+
+				 
 function isEmpty(field) {
 	return (field && field.length>0);
 }
@@ -56,20 +81,29 @@ function getJsonAndStartFunctions() {
 
 function startFunctions(data) {
 	
-	let playerInfo = createPlayerInfo(data.player);
-	document.body.appendChild(playerInfo);
+	// Get the content element and clean it
+	let content = document.getElementById('content');
+	content.innerHTML = '';
 	
+	// Check if there are some logged player to print
+	if(data.player) {
+		
+		let playerInfo = createPlayerInfo(data.player);
+		content.appendChild(playerInfo);
+		
+	}
+
 	let gameList = createGameList(data.game);
-	document.body.appendChild(gameList);
+	content.appendChild(gameList);
 	
 }
 
 function createPlayerInfo(data) {
-	
+
 	let p = document.createElement('p');
 	p.innerHTML = 'ID: ' + data.id + ' / User: ' + data.name;
 	return p;
-	
+
 }
 
 
