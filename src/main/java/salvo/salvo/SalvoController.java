@@ -192,6 +192,8 @@ public class SalvoController {
     //TODO: METHOD TO CREATE A NEW USER WITH RESPONSE ENTITIES POINT 5
     // Method to responds to a request to create a new player
     @RequestMapping("/players")
+    //@RequestParam
+    // Annotation which indicates that a method parameter should be bound to a web request parameter.
     public ResponseEntity<String> createPlayer(@RequestParam String name, @RequestParam String password) {
         if (name.isEmpty()) {
             return new ResponseEntity<>("No name given", HttpStatus.FORBIDDEN);
@@ -204,14 +206,5 @@ public class SalvoController {
             return new ResponseEntity<>("Name already used", HttpStatus.CONFLICT);
         }
     }
-/*
-    private Boolean userExist(String name) {
-        List<Player> players = playerRepo.findAll();
-        for (Player player : players) {
-            if(player.getName() == name) {
-                return true;
-            }
-        }
-    }*/
 
 }
