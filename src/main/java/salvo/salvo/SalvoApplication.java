@@ -231,4 +231,4 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 }
 
-// TODO: Test! POINT 5
+// TODO: Created toggle between login and logout. Need to add logout to other pages

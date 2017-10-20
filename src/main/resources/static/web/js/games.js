@@ -1,5 +1,8 @@
 $(document).ready(function() {
 	
+	// Show login or logout depends on user is logged in
+	isUserLogged();
+	
 	// Check if some user has authenticated
 	getJsonAndStartFunctions();
 	
@@ -8,6 +11,23 @@ $(document).ready(function() {
 	setLogoutForm();
 	
 });
+
+
+function isUserLogged() {
+
+	if($('#playerInfo').length) {
+
+		$('#login-form').hide();
+		$('#logout-form').show();
+		
+	}else {
+
+		$('#login-form').show();
+		$('#logout-form').hide();
+		
+	}
+	
+}
 
 
 function setLoginForm() {
@@ -48,17 +68,20 @@ function login(user, pwd) {
          { name: user.value,
            password: pwd.value })
    .done(function() {
-			console.log("in"),
 			user.value = '',
 			pwd.value = '',
-			getJsonAndStartFunctions()})
+			getJsonAndStartFunctions()
+		})
    .fail(function() {alert('Username or password are wrong')});
 }
 
 
 function logout() {
   $.post('/api/logout')
-   .done(function() {console.log("out");alert('You are logging out of your session');})
+   .done(function() {
+			alert('You are logging out of your session'),
+			getJsonAndStartFunctions()
+		})
    .fail(function() {alert('Some problem happened with logout');});
 }
 
@@ -74,12 +97,18 @@ function getJsonAndStartFunctions() {
   //urlJson = 'gamesdata.json';
 	
 	$.getJSON(urlJson, function (data) {
-		startFunctions(data);
+		
+		// Print games info and player info if exists
+		printInfo(data);
+		
+		// Show login or logout depends on user is logged in
+		isUserLogged();
+		
 	});
 	
 }
 
-function startFunctions(data) {
+function printInfo(data) {
 	
 	// Get the content element and clean it
 	let content = document.getElementById('content');
@@ -88,13 +117,19 @@ function startFunctions(data) {
 	// Check if there are some logged player to print
 	if(data.player) {
 		
-		let playerInfo = createPlayerInfo(data.player);
-		content.appendChild(playerInfo);
+		// Create a div to put player info
+		let playerInfo = document.createElement('div');
+		playerInfo.id = 'playerInfo';
+		let player = createPlayerInfo(data.player);
+		content.appendChild(playerInfo).appendChild(player);
 		
 	}
-
+	
+	// Create a div to put games info
+	let gamesInfo = document.createElement('div');
+	gamesInfo.id = 'gamesInfo';
 	let gameList = createGameList(data.game);
-	content.appendChild(gameList);
+	content.appendChild(gamesInfo).appendChild(gameList);
 	
 }
 

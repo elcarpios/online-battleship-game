@@ -189,7 +189,6 @@ public class SalvoController {
         return dto;
     }
 
-    //TODO: POINT 6 CREATE LOGOUT
     // Method to responds to a request to create a new player
     @RequestMapping("/players")
     //@RequestParam

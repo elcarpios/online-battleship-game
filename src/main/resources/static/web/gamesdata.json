@@ -1,0 +1,59 @@
+{
+  "game": [
+    {
+      "id": 1,
+      "created": 1506680795426,
+      "gamePlayers": [
+        {
+          "id": 2,
+          "player": {
+            "id": 2,
+            "email": "c.obrian@ctu.gov"
+          },
+          "score": 0.0
+        },
+        {
+          "id": 1,
+          "player": {
+            "id": 1,
+            "email": "j.bauer@ctu.gov"
+          },
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "created": 1506684395426,
+      "gamePlayers": [
+        {
+          "id": 3,
+          "player": {
+            "id": 4,
+            "email": "t.almeida@ctu.gov"
+          },
+          "score": 1.0
+        },
+        {
+          "id": 4,
+          "player": {
+            "id": 1,
+            "email": "j.bauer@ctu.gov"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "created": 1506687995426,
+      "gamePlayers": [
+        
+      ]
+    }
+  ],
+  "player": {
+    "name": "j.bauer@ctu.gov",
+    "id": 1
+  }
+}
