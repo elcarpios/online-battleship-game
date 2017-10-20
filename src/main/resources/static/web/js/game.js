@@ -3,8 +3,31 @@ $(document).ready(function() {
 	let urlParameters = paramObj(window.location.href);
 	//let urlJson = 'gamedata.json';
 	let urlJson =  ' /api/game_view/' + urlParameters.gp;
+	
 	getJsonAndStartFunctions(urlJson);	
+	
+	setLogoutForm();
+	
 });
+
+
+function setLogoutForm() {
+	
+	let logoutButton = document.getElementById('logout-button');
+	
+	logoutButton.addEventListener('click',logout);
+	
+}
+
+function logout() {
+  $.post('/api/logout')
+   .done(function() {
+			alert('You are being redirecting into Games web page'),
+			window.location.href = '/web/games.html'
+		})
+   .fail(function() {alert('Some problem happened with logout');});
+}
+
 
 function paramObj(search) {
   var obj = {};

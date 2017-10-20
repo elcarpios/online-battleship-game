@@ -51,7 +51,6 @@ function setLoginForm() {
 
 function setLogoutForm() {
 	
-	let logoutForm = document.getElementById('logout-form');
 	let logoutButton = document.getElementById('logout-button');
 	
 	logoutButton.addEventListener('click',logout);
