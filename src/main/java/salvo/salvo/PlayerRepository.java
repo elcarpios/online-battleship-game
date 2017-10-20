@@ -11,7 +11,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     /* 4.4.2 Query creation
     https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
      */
-    List<Player> findByUserName(@Param("userName") String userName);
+    Player findByUserName(@Param("userName") String userName);
 
     List<Player> findByName(@Param("name") String name);
 

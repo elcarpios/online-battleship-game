@@ -32,7 +32,7 @@ public class SalvoController {
     public Map<String,Object> makeUserGameDTO(Authentication authentication) {
         Map<String,Object> dto = new HashMap<>();
         if(!isGuest(authentication)) {
-            Player currentUser = playerRepo.findByUserName(authentication.getName()).get(0);
+            Player currentUser = playerRepo.findByUserName(authentication.getName());
             dto.put("player", makeUserDTO(currentUser));
         }
         dto.put("game", makeGameDTO());
@@ -148,21 +148,29 @@ public class SalvoController {
 
     // Method to Return DTO with GamePlayer Information
     @RequestMapping(value = "/game_view/{id}")
-    public Map<String,Object> makeGamePlayerDTO(@PathVariable("id") long id) {
+    public ResponseEntity<Object> makeGamePlayerDTO(@PathVariable("id") long id, Authentication authentication) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(id);
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id",gamePlayer.getId());
-        dto.put("created",gamePlayer.getGame().getCreationDate());
-        dto.put("gamePlayers", gamePlayer.getGame().getGameplayers()
-                .stream()
-                .map(this::makeGamePlayerDTO) // For each gamePlayer(gp) we send it to the function
-                .collect(Collectors.toList()));
-        dto.put("ships", makeShipsDTO(gamePlayer.getShips()));
-        dto.put("salvoes", gamePlayer.getGame().getGameplayers()
-                .stream()
-                .map(gp-> makeSalvoesDTO(gp.getSalvoes())) // For each gamePlayer(gp) we send it to the function
-                .collect(Collectors.toList()));
-        return dto;
+        // First check if gamePlayer user is the same than the actual user
+        Player currentUser = playerRepo.findByUserName(authentication.getName());
+        if(gamePlayer.getPlayer().getId() == currentUser.getId()) {
+            Map<String, Object> dto = new LinkedHashMap<String, Object>();
+            dto.put("id",gamePlayer.getId());
+            dto.put("player_id",gamePlayer.getPlayer().getId());
+            dto.put("created",gamePlayer.getGame().getCreationDate());
+            dto.put("gamePlayers", gamePlayer.getGame().getGameplayers()
+                    .stream()
+                    .map(this::makeGamePlayerDTO) // For each gamePlayer(gp) we send it to the function
+                    .collect(Collectors.toList()));
+            dto.put("ships", makeShipsDTO(gamePlayer.getShips()));
+            dto.put("salvoes", gamePlayer.getGame().getGameplayers()
+                    .stream()
+                    .map(gp-> makeSalvoesDTO(gp.getSalvoes())) // For each gamePlayer(gp) we send it to the function
+                    .collect(Collectors.toList()));
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("That is not your game!", HttpStatus.FORBIDDEN);
+        }
+
     }
 
     private List<Object> makeShipsDTO(Set<Ship> ships) {
@@ -197,7 +205,7 @@ public class SalvoController {
         if (name.isEmpty()) {
             return new ResponseEntity<>("No name given", HttpStatus.FORBIDDEN);
         }
-        if(playerRepo.findByUserName(name).size() == 0) {
+        if(playerRepo.findByUserName(name) == null) {
             Player newPlayer = new Player("",name,password);
             playerRepo.save(newPlayer);
             return new ResponseEntity<>("Named added", HttpStatus.CREATED);
