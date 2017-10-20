@@ -149,6 +149,9 @@ function printInfo(data) {
 	let content = document.getElementById('content');
 	content.innerHTML = '';
 	
+	// Create an empty id player, if exists will get the value
+	let idPlayer = '';
+	
 	// Check if there are some logged player to print
 	if(data.player) {
 		
@@ -158,12 +161,15 @@ function printInfo(data) {
 		let player = createPlayerInfo(data.player);
 		content.appendChild(playerInfo).appendChild(player);
 		
+		// Get the ID to compare in games
+		idPlayer = data.player.id;
+		
 	}
 	
 	// Create a div to put games info
 	let gamesInfo = document.createElement('div');
 	gamesInfo.id = 'gamesInfo';
-	let gameList = createGameList(data.game);
+	let gameList = createGameList(data.game,idPlayer);
 	content.appendChild(gamesInfo).appendChild(gameList);
 	
 }
@@ -177,16 +183,21 @@ function createPlayerInfo(data) {
 }
 
 
-function createGameList(data) {
+function createGameList(games, idPlayer) {
+	
+	console.log(games);
 	
 	// Create the ordered list
   let ol = document.createElement('ol');
 	ol.innerHTML = 'Games:';
 	
 	// Go throw all the JSON Data
-  for(let i=0; i<data.length; i++) {
+  for(let i=0; i<games.length; i++) {
 		
-		let game = data[i];
+		let game = games[i];
+		
+		// Boleean to check if the current user is a player in that game
+		let isPlaying = false;
 		
 		// Create the li element
 		let li = document.createElement('li');
@@ -213,7 +224,28 @@ function createGameList(data) {
 			let gamePlayer = gamePlayers[j];
 		  li.innerHTML += gamePlayer.player.email + ', ';
 			
+			// Test if the user is playing this game
+			if(idPlayer === gamePlayer.player.id) {
+				isPlaying = true;
+				var gpNum = gamePlayer.id;
+				
+			}
+			
 		}
+		
+		// Create the buttons to join if the player is playing
+		if(isPlaying) {
+		
+			let join = document.createElement('button');
+			join.id = gpNum;
+			join.innerHTML = 'Join';
+			join.addEventListener('click',function() {
+				goToGP(this.id);
+			});
+			li.appendChild(join);
+			
+		}
+		
 		// Append li to the list
 		ol.appendChild(li);
   }
@@ -221,6 +253,12 @@ function createGameList(data) {
 	return ol;
 }
 
+
+function goToGP(id) {
+	
+	window.location.href = '/web/game.html?gp=' + id;
+	
+}
 
 
 function formatDate(fullDate) {
