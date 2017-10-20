@@ -32,10 +32,20 @@ function isUserLogged() {
 
 function setLoginForm() {
 	
-	let loginForm = document.getElementById('login-form');
-	let loginButton = document.getElementById('login-button');
+	let user = document.getElementById('username');
+	let pwd = document.getElementById('userpwd');
 	
-	loginButton.addEventListener('click',checkLogin);
+	// Login
+	let loginButton = document.getElementById('login-button');
+	loginButton.addEventListener('click', function() {
+		login(user,pwd)
+	});
+	
+	// Signup
+	let signupButton = document.getElementById('signup-button');
+	signupButton.addEventListener('click', function() {
+		signup(user,pwd)
+	});
 	
 }
 
@@ -49,30 +59,56 @@ function setLogoutForm() {
 }
 
 
-function checkLogin() {
+function checkFields(arrayFields) {
 	
-	let user = document.getElementById('username');
-	let pwd = document.getElementById('userpwd');
+	let checker = true;
+	let empty = '';
+	
+	for(field of arrayFields) {
 
-	if (isEmpty(user.value) && isEmpty(pwd.value)) {
-		login(user,pwd);
+		if (!(isEmpty(field.value) && isEmpty(field.value))) {
+			
+			empty += field.name + '\n';
+			checker = false;
+			
+		}
+		
 	}
-	else {
-		alert('Please, fill name and password fields');
+	
+	if(checker) {
+		return true;
+	} else {
+		alert('Please fill the next fields: \n' + empty);
 	}
+	
+}
+	
+
+function signup(user, pwd) {
+	
+	if(checkFields([user,pwd])) {
+		$.post('/api/players',
+					 { name: user.value, 
+						 password: pwd.value })
+		.done(function() {login(user,pwd)})
+		.fail(function() {alert('Username is already in use')});
+	}
+	
 }
 
 
 function login(user, pwd) {
-	$.post('/api/login', 
-         { name: user.value,
-           password: pwd.value })
-   .done(function() {
-			user.value = '',
-			pwd.value = '',
-			getJsonAndStartFunctions()
-		})
-   .fail(function() {alert('Username or password are wrong')});
+	if(checkFields([user,pwd])) {
+		$.post('/api/login', 
+					 { name: user.value,
+						 password: pwd.value })
+		 .done(function() {
+				user.value = '',
+				pwd.value = '',
+				getJsonAndStartFunctions()
+			})
+		 .fail(function() {alert('Username or password are wrong')});
+	}
 }
 
 

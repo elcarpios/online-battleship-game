@@ -193,10 +193,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/rest/**").denyAll()
+				.antMatchers("/rest/**").permitAll()
 				.antMatchers("/web/games.html").permitAll()
+				.antMatchers("/web/css/games.css").permitAll()
 				.antMatchers("/web/js/games.js").permitAll()
 				.antMatchers("/api/games").permitAll()
+				.antMatchers("/api/players").permitAll()
 				.antMatchers("/api/login").permitAll()
 				.anyRequest().fullyAuthenticated();
 
@@ -231,4 +233,4 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 }
 
-// TODO: Created toggle between login and logout. Need to add logout to other pages
+// TODO: Created signup button functional. Need to add logout to other pages

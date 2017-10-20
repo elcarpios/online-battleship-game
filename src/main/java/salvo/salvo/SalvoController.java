@@ -198,7 +198,7 @@ public class SalvoController {
             return new ResponseEntity<>("No name given", HttpStatus.FORBIDDEN);
         }
         if(playerRepo.findByName(name).size() == 0) {
-            Player newPlayer = new Player(name,"",password);
+            Player newPlayer = new Player("",name,password);
             playerRepo.save(newPlayer);
             return new ResponseEntity<>("Named added", HttpStatus.CREATED);
         } else {
