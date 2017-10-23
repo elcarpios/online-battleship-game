@@ -93,8 +93,7 @@ public class SalvoController {
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
         if (isGuest(authentication)) {
             Map<String, Object> dto = new HashMap<>();
-            dto.put("Error","No user logged in");
-            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("Error","No user logged in"), HttpStatus.UNAUTHORIZED);
         }
         else {
             Player user = playerRepo.findByUserName(authentication.getName());
@@ -235,5 +234,41 @@ public class SalvoController {
         } else {
             return new ResponseEntity<>("Name already used", HttpStatus.CONFLICT);
         }
+    }
+
+
+    // Method to Return DTO with Players game information
+    @RequestMapping(value = "/game/{id}/players")
+    public ResponseEntity<Object> checkPlayersGame(@PathVariable("id") long id, Authentication authentication) {
+        Map<String, Object> dto = new HashMap<>();
+        // Some user is connected?
+        if (isGuest(authentication)) {
+            dto.put("Error","No user logged in");
+            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            Game game = gameRepo.findOne(id);
+            if(game == null) {
+                return new ResponseEntity<>(makeMap("Error","No game with this ID"), HttpStatus.FORBIDDEN);
+            } else if(isFull(game)){
+                return new ResponseEntity<>(makeMap("Error","The game is full"), HttpStatus.FORBIDDEN);
+            } else {
+                Player user = playerRepo.findByUserName(authentication.getName());
+                GamePlayer gp = new GamePlayer(game,user);
+                gamePlayerRepo.save(gp);
+                return new ResponseEntity<>(getGPId(gp), HttpStatus.CREATED);
+            }
+        }
+
+    }
+
+    private Map<String,Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
+    }
+
+    private boolean isFull (Game game) {
+        return game.getGameplayers().size() == 2;
     }
 }

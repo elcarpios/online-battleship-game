@@ -206,7 +206,7 @@ function createPlayerInfo(data) {
 
 function createGameList(games, idPlayer) {
 	
-	console.log(games);
+	console.log(idPlayer);
 	
 	// Create the ordered list
   let ol = document.createElement('ol');
@@ -254,18 +254,29 @@ function createGameList(games, idPlayer) {
 			
 		}
 		
-		// Create the buttons to join if the player is playing
+		// Create the buttons to play if the user is playing
 		if(isPlaying) {
 		
-			let join = document.createElement('button');
-			join.id = gpNum;
-			join.innerHTML = 'Join';
-			join.addEventListener('click',function() {
+			let play = document.createElement('button');
+			play.id = gpNum;
+			play.innerHTML = 'Play';
+			play.addEventListener('click',function() {
 				goToGP(this.id);
 			});
-			li.appendChild(join);
+			li.appendChild(play);
 			
 		}
+		// If the user is not playing and is some place available let join
+		else if(idPlayer != '' && gamePlayers.length == 1){
+			let join = document.createElement('button');
+			join.id = game.id;
+			join.innerHTML = 'Join';
+			join.addEventListener('click',function() {
+				createGP(this.id);
+			});
+			li.appendChild(join);
+		}
+		
 		
 		// Append li to the list
 		ol.appendChild(li);
@@ -273,6 +284,17 @@ function createGameList(games, idPlayer) {
 	
 	return ol;
 }
+
+
+function createGP(id) {
+	$.post('/api/game/' + id + '/players')
+	 .done(function(response) {
+			goToGP(response.idGP);
+		})
+	 .fail(function(response) {alert(response.responseText)});
+}
+
+
 
 
 function goToGP(id) {
