@@ -1,9 +1,9 @@
 
-#login-form {
+.login {
 	display: none;
 }
 
-#logout-form {
+.logout {
 	display: none;
 }
 

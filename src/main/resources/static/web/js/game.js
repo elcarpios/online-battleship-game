@@ -47,7 +47,7 @@ function getJsonAndStartFunctions(url) {
 }
 
 function startFunctions(data) {
-	console.log(data);
+
 	// Define the prefixes for duplicate values, like coordinades in grid
 	let ownPrefix = 'own-';
 	let ownTurnsSalvoes = data.salvoes[1];

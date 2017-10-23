@@ -28,7 +28,7 @@ public class SalvoController {
     @Autowired // Skip configurations elsewhere of what to inject and just does it for you
     private GamePlayerRepository gamePlayerRepo;
 
-    @RequestMapping("/games") // Call getAll() when a GET for the URL /games is received
+    @RequestMapping(value="/games", method=RequestMethod.GET) // Call getAll() when a GET for the URL /games is received
     public Map<String,Object> makeUserGameDTO(Authentication authentication) {
         Map<String,Object> dto = new HashMap<>();
         if(!isGuest(authentication)) {
@@ -37,10 +37,6 @@ public class SalvoController {
         }
         dto.put("game", makeGameDTO());
         return dto;
-    }
-
-    private boolean isGuest(Authentication authentication) {
-        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
     public Map<String,Object> makeUserDTO(Player user) {
@@ -87,6 +83,33 @@ public class SalvoController {
         return gameRepo.findAll().stream()
                 .map(game -> game.getId())
                 .collect(Collectors.toList());
+    }
+
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    }
+
+    @RequestMapping(value="/games", method=RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
+        if (isGuest(authentication)) {
+            Map<String, Object> dto = new HashMap<>();
+            dto.put("Error","No user logged in");
+            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+        }
+        else {
+            Player user = playerRepo.findByUserName(authentication.getName());
+            Game game = new Game();
+            gameRepo.save(game);
+            GamePlayer gp = new GamePlayer(game,user);
+            gamePlayerRepo.save(gp);
+            return new ResponseEntity<>(getGPId(gp), HttpStatus.CREATED);
+        }
+    }
+
+    private Map<String, Object> getGPId(GamePlayer gp) {
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("idGP", gp.getId());
+        return dto;
     }
 
 
@@ -213,5 +236,4 @@ public class SalvoController {
             return new ResponseEntity<>("Name already used", HttpStatus.CONFLICT);
         }
     }
-
 }

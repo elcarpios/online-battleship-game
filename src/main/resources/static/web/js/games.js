@@ -9,6 +9,7 @@ $(document).ready(function() {
 	// Set Logx Events
   setLoginForm();
 	setLogoutForm();
+	setCreateGame();
 	
 });
 
@@ -17,13 +18,13 @@ function isUserLogged() {
 
 	if($('#playerInfo').length) {
 
-		$('#login-form').hide();
-		$('#logout-form').show();
+		$('.login').hide();
+		$('.logout').show();
 		
 	}else {
 
-		$('#login-form').show();
-		$('#logout-form').hide();
+		$('.login').show();
+		$('.logout').hide();
 		
 	}
 	
@@ -56,6 +57,26 @@ function setLogoutForm() {
 	logoutButton.addEventListener('click',logout);
 	
 }
+
+
+
+function setCreateGame() {
+	
+	let createButton = document.getElementById('create-game');
+	
+	createButton.addEventListener('click',createGame);
+	
+}
+
+
+function createGame() {
+	
+	$.post('/api/games')
+		 .done(function(response) {goToGP(response.idGP)})
+		 .fail(function(response) {alert('Game has not created')});
+	
+}
+
 
 
 function checkFields(arrayFields) {
