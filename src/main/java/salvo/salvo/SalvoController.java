@@ -28,6 +28,9 @@ public class SalvoController {
     @Autowired // Skip configurations elsewhere of what to inject and just does it for you
     private GamePlayerRepository gamePlayerRepo;
 
+    @Autowired // Skip configurations elsewhere of what to inject and just does it for you
+    private ShipRepository shipRepo;
+
     @RequestMapping(value="/games", method=RequestMethod.GET) // Call getAll() when a GET for the URL /games is received
     public Map<String,Object> makeUserGameDTO(Authentication authentication) {
         Map<String,Object> dto = new HashMap<>();
@@ -268,7 +271,36 @@ public class SalvoController {
         return map;
     }
 
+    // Game is complete?
     private boolean isFull (Game game) {
         return game.getGameplayers().size() == 2;
+    }
+
+
+    // Method to create and save list of ships
+    @RequestMapping(value = "/games/players/{gpId}/ships")
+    public ResponseEntity<String> createShips(@PathVariable("gpId") long gpId,
+                                              @RequestBody List<Ship> ships,
+                                              Authentication authentication) {
+        GamePlayer gp = gamePlayerRepo.findOne(gpId);
+        // Current user and gp owner are the same
+        Player user = playerRepo.findByUserName(authentication.getName());
+        if(isGuest(authentication) || gp == null || (user.getId() != gp.getPlayer().getId()) ) {
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+        }
+        else if(gp.getShips() == null){
+            return new ResponseEntity<>("Already has the ships placed", HttpStatus.UNAUTHORIZED);
+        } else {
+            for(Ship ship : ships) {
+                saveShip(gp,ship);
+            }
+            return new ResponseEntity<>("Ships have been placed", HttpStatus.CREATED);
+        }
+
+    }
+
+    private void saveShip (GamePlayer gp, Ship ship) {
+        gp.addShip(ship);
+        shipRepo.save(ship);
     }
 }
