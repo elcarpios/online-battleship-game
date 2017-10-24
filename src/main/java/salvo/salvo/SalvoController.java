@@ -288,7 +288,7 @@ public class SalvoController {
         if(isGuest(authentication) || gp == null || (user.getId() != gp.getPlayer().getId()) ) {
             return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
         }
-        else if(gp.getShips() == null){
+        else if(gp.getShips().size() > 0){
             return new ResponseEntity<>("Already has the ships placed", HttpStatus.UNAUTHORIZED);
         } else {
             for(Ship ship : ships) {

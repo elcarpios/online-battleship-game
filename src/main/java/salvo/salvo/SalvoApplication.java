@@ -232,4 +232,4 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 }
 
-// TODO: Created signup button functional. Need to add logout to other pages
+// TODO: TASK3: P1
