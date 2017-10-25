@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	//let urlJson = 'gamedummy.json';
-	let urlJson = 'gamedata.json';
+	let urlJson = 'gamedummy.json';
+	//let urlJson = 'gamedata.json';
 	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	
 	getJsonAndStartFunctions(urlJson);	
@@ -16,7 +16,6 @@ $(document).ready(function() {
 function setShips() {
 	
 	let ships = document.getElementsByClassName('ship');
-	console.log(ships);
 	
 	for(ship of ships) {
 		ship.addEventListener('click',function(){setShip(this.id);});
@@ -59,8 +58,6 @@ function getJsonAndStartFunctions(url) {
 }
 
 function startFunctions(data) {
-	
-	console.log(data);
 
 	// Construct players panel
 	infoPlayerConstructor(data.gamePlayers);
@@ -79,16 +76,19 @@ function startFunctions(data) {
 		document.getElementById('own-board').appendChild(ownGrid);
 		
 		// Print or positioning ships
-		if(data.ships.length < 3) {
-			let usedShips = shipsUsed(data.ships);
+		if(data.ships != null) {
+			var usedShips = shipsUsed(data.ships);
+			putShipsOnGrid(ownPrefix, data.ships);
+			
+		}
+		else {
+			var usedShips = [''];
+		}
 			let ownShips = shipsContainerConstructor('own', usedShips);
 			document.getElementById('own-board').appendChild(ownShips);
 			
-		}
+			
 		
-		
-	
-		putShipsOnGrid(ownPrefix, data.ships);
 
 
 		// Exists salvoes to print?
@@ -143,11 +143,7 @@ function shipsContainerConstructor(who, usedShips) {
 	let shipsList = ['Destroyer','Submarine','PatrolBoat'];
 	
 	// Add the ships into the box
-	let legend = addShipsToLegend(who,shipsList,usedShips);
-	
-	container.appendChild(legend);
-	
-	return container;
+	return addShipsToLegend(who,shipsList,usedShips);
 	
 }
 
@@ -155,19 +151,22 @@ function shipsContainerConstructor(who, usedShips) {
 function addShipsToLegend(who,listShips,usedShips) {
 	
 	let ships = document.createElement('div');
+	ships.className = 'legend-ships';
 	
 	for(let i=0; i<listShips.length; i++) {
 		
 		let ship = document.createElement('div');
-		console.log(usedShips);
+
 		// Check is the ship has to be put
 		if(who == 'own' && usedShips && usedShips.indexOf(listShips[i]) == -1) {
 			ship.setAttribute('draggable','true');
 			ship.setAttribute('ondragstart','drag(event)');
+			ship.className += ' bold';
 		}
 	
 		
-		ship.id = (who = 'own') ? listShips[i] : who + listShips[i];
+		ship.id = (who == 'own') ? listShips[i] : who + listShips[i];
+		ship.className += ' legend-ship'
 		ship.innerHTML = listShips[i];
 		ships.appendChild(ship);
 		
@@ -251,19 +250,19 @@ function gridConstructor(idDiv,idPrefix) {
 
 
 function putShipsOnGrid(prefix,ships) {
-
+	
 	for(let i=0; i<ships.length; i++) {
 		
 		let ship = ships[i];
-		console.log(ship.Type)
+
 		switch (ship.Type) {
 			
-		case 'Destroyer': 	implementClasses(prefix,' destroyer',ship.Locations);	
+		case 'Destroyer': 	implementClasses(prefix,' destroyer-color',ship.Locations);	
 												break;
 				
-		case 'Submarine':		implementClasses(prefix,' submarine',ship.Locations);	
+		case 'Submarine':		implementClasses(prefix,' submarine-color',ship.Locations);	
 												break;
-		case 'PatrolBoat': implementClasses(prefix,' patrol-boat',ship.Locations);
+		case 'PatrolBoat': implementClasses(prefix,' patrol-boat-color',ship.Locations);
 												break;
 		default: 						alert('Type ship doesnt match');
 												break;
@@ -296,9 +295,9 @@ function putSalvoesOnGrid(prefix, turns) {
 			let salvoCell = document.getElementById(prefix + salvo);
 			let classesCell = salvoCell.classList;
 			
-			if((classesCell.value.indexOf('destroyer') != -1) ||
-				(classesCell.value.indexOf('submarine') != -1) ||
-				(classesCell.value.indexOf('patrol-boat') != -1)) {
+			if((classesCell.value.indexOf('destroyer-color') != -1) ||
+				(classesCell.value.indexOf('submarine-color') != -1) ||
+				(classesCell.value.indexOf('patrol-boat-color') != -1)) {
 				
 				salvoCell.className += ' bombed';
 				
@@ -363,7 +362,7 @@ function drop(ev) {
 				let legend = document.getElementById(type);
 				legend.removeAttribute('draggable');
 				legend.removeAttribute('ondragstart');
-				
+				legend.classList.remove('bold');
 			}
 			else {
 				return false;
@@ -387,8 +386,10 @@ function locationsAreFree(prefix,locations) {
 		let cell = document.getElementById(cellName);
 		
 		let classes = cell.className.split(' ');
-		
-		if(classes.length > 2) {
+
+		if((classes.indexOf('destroyer-color') != -1) ||
+			 (classes.indexOf('submarine-color') != -1) ||
+			 (classes.indexOf('patrol-boat-color') != -1)) {
 			alert('This position is not available');
 			return false;
 		}

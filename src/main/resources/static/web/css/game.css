@@ -1,6 +1,7 @@
 :root {
-	--col-number: 11;
-	--row-number: 11;
+	--destroyer-color: #F5FE52;
+	--submarine-color: #6BE2C4;
+	--patrol-boat-color: #994FD5;
 }
 
 html {
@@ -42,7 +43,7 @@ header{
 	align-items: center;
 	background: linear-gradient(to bottom, rgba(255,200,99,1) 0%,rgba(255,216,145,1) 100%); 
 	border: 1px solid white;
-	height: 500px;
+	height: 430px;
 	width: 400px;
 }
 
@@ -66,17 +67,61 @@ header{
 	width: 25px;
 }
 
+.legend-ships {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+	margin-top: 20px;
+	width: 80%;
+}
+
+.legend-ship {
+	border: 1px solid white;
+	padding: 5px 15px;
+}
+
 .bold {
 	font-weight: bold;
 }
 
+/* SHIPS */
 
+#Destroyer {
+	background-color: var(--destroyer-color);
+}
 
+#Submarine {
+	background-color: var(--submarine-color);
+}
 
+#PatrolBoat {
+	background-color: var(--patrol-boat-color);
+}
 
+#opDestroyer {
+	background-color: var(--destroyer-color);
+}
 
+#opSubmarine {
+	background-color: var(--submarine-color);
+}
 
+#opPatrolBoat {
+	background-color: var(--patrol-boat-color);
+}
 
+.destroyer-color {
+	background-color: var(--destroyer-color);
+}
+
+.submarine-color {
+	background-color: var(--submarine-color);
+}
+
+.patrol-boat-color {
+	background-color: var(--patrol-boat-color);
+}
 
 
 
@@ -86,17 +131,7 @@ header{
 
 
 
-.destroyer {
-	background-color: #F5FE52;
-}
 
-.submarine {
-	background-color: #6BE2C4;
-}
-
-.patrol-boat {
-	background-color: #994FD5;
-}
 
 .bombed {
 	background-color: red;
