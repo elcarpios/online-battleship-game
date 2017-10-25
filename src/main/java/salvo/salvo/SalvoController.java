@@ -208,8 +208,8 @@ public class SalvoController {
     private Map<String, Object> getShipDTO(Ship ship) {
 
         Map<String,Object> shipDTO = new HashMap<>();
-        shipDTO.put("Type", ship.getType());
-        shipDTO.put("Locations", ship.getLocations());
+        shipDTO.put("type", ship.getType());
+        shipDTO.put("locations", ship.getLocations());
 
         return shipDTO;
     }
