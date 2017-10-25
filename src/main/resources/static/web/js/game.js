@@ -79,15 +79,16 @@ function startFunctions(data) {
 		document.getElementById('own-board').appendChild(ownGrid);
 		
 		// Print or positioning ships
-		if(data.ships.length < 2) {
-			let ownShips = shipsContainerConstructor('own');
+		if(data.ships.length < 3) {
+			let usedShips = shipsUsed(data.ships);
+			let ownShips = shipsContainerConstructor('own', usedShips);
 			document.getElementById('own-board').appendChild(ownShips);
 			
 		}
-		else {
-			console.log("hooa");
-			putShipsOnGrid(ownPrefix, data.ships);
-		}
+		
+		
+	
+		putShipsOnGrid(ownPrefix, data.ships);
 
 
 		// Exists salvoes to print?
@@ -118,15 +119,31 @@ function startFunctions(data) {
 }
 
 
+function shipsUsed(ships) {
+	
+	let shipsName = [];
+	
+	for(let ship of ships) {
+		
+		shipsName.push(ship.Type);
+		
+	}
+	
+	return shipsName;
+	
+}
+
+
 // Create the legend to contain the ships for each board
-function shipsContainerConstructor(who) {
+// Check which ships are needed to positioning
+function shipsContainerConstructor(who, usedShips) {
 	
 	let container = document.createElement('div');
 	
 	let shipsList = ['Destroyer','Submarine','PatrolBoat'];
 	
 	// Add the ships into the box
-	let legend = addShipsToLegend(who,shipsList);
+	let legend = addShipsToLegend(who,shipsList,usedShips);
 	
 	container.appendChild(legend);
 	
@@ -135,18 +152,22 @@ function shipsContainerConstructor(who) {
 }
 
 
-function addShipsToLegend(who,listShips) {
+function addShipsToLegend(who,listShips,usedShips) {
 	
 	let ships = document.createElement('div');
 	
 	for(let i=0; i<listShips.length; i++) {
 		
 		let ship = document.createElement('div');
-		if(who == 'own') {
-			ship.id = listShips[i];
+		console.log(usedShips);
+		// Check is the ship has to be put
+		if(who == 'own' && usedShips && usedShips.indexOf(listShips[i]) == -1) {
 			ship.setAttribute('draggable','true');
 			ship.setAttribute('ondragstart','drag(event)');
 		}
+	
+		
+		ship.id = (who = 'own') ? listShips[i] : who + listShips[i];
 		ship.innerHTML = listShips[i];
 		ships.appendChild(ship);
 		

@@ -70,16 +70,16 @@ public class SalvoApplication {
 			// Create Ships
 			Ship destroyer1 = new Ship("Destroyer", new HashSet<>(Arrays.asList("H2","H3","H4")));
 			Ship submarine1 = new Ship("Submarine", new HashSet<>(Arrays.asList("E1","F1","G1")));
-			Ship patrolBoat1 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("B4","B5")));
+			Ship patrolBoat1 = new Ship("PatrolBoat", new HashSet<>(Arrays.asList("B4","B5")));
 
 			Ship destroyer2 = new Ship("Destroyer", new HashSet<>(Arrays.asList("B5","C5","D5")));
-			Ship patrolBoat2 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("F1","F2")));
+			Ship patrolBoat2 = new Ship("PatrolBoat", new HashSet<>(Arrays.asList("F1","F2")));
 
 			Ship destroyer3 = new Ship("Destroyer", new HashSet<>(Arrays.asList("B5","C5","D5")));
-			Ship patrolBoat3 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("C6","C7")));
+			Ship patrolBoat3 = new Ship("PatrolBoat", new HashSet<>(Arrays.asList("C6","C7")));
 
 			Ship destroyer4 = new Ship("Destroyer", new HashSet<>(Arrays.asList("A2","A3","A4")));
-			Ship patrolBoat4 = new Ship("Patrol Boat", new HashSet<>(Arrays.asList("G6","H6")));
+			Ship patrolBoat4 = new Ship("PatrolBoat", new HashSet<>(Arrays.asList("G6","H6")));
 
 
 			// Create Salvoes
