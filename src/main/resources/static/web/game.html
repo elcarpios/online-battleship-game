@@ -2,14 +2,40 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/game.css">
 	<title>Ship Locations!</title>
 </head>
 <body>
+	
+	<div id="wrapper">
 
-	<form id="logout-form">
-		<button type="button" id="logout-button">Log out</button>
-	</form>
+		<header>
+			
+			<div id="players-info">
+				<form id="logout-form">
+					<button type="button" id="logout-button">Log out</button>
+				</form>
+			</div>
+			
+		</header>
+		
+		
+		<div id="content">
+		
+			<div id="own-board" class="board">
+				
+			</div>
+			<div id="op-board" class="board"></div>
+			
+		</div>
+		
+		
+	</div>
+
+
+	
+
 
 	<script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
