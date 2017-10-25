@@ -1,9 +1,9 @@
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
-	let urlJson = 'gamedummy.json';
+	//let urlJson = 'gamedummy.json';
 	//let urlJson = 'gamedata.json';
-	//let urlJson =  ' /api/game_view/' + urlParameters.gp;
+	let urlJson =  ' /api/game_view/' + urlParameters.gp;
 	
 	getJsonAndStartFunctions(urlJson);	
 	
@@ -11,16 +11,6 @@ $(document).ready(function() {
 	
 });
 
-
-// Set functions to colocate ships on grid 
-function setShips() {
-	
-	let ships = document.getElementsByClassName('ship');
-	
-	for(ship of ships) {
-		ship.addEventListener('click',function(){setShip(this.id);});
-	}
-}
 
 function setLogoutForm() {
 	
@@ -92,7 +82,7 @@ function startFunctions(data) {
 
 
 		// Exists salvoes to print?
-		if(ownTurnsSalvoes.length > 0) 
+		if(ownTurnsSalvoes != null && ownTurnsSalvoes.length > 0) 
 			putSalvoesOnGrid(ownPrefix, ownTurnsSalvoes);
 	
 	
@@ -177,10 +167,16 @@ function addShipsToLegend(who,listShips,usedShips) {
 }
 
 
-function infoPlayerConstructor(players) {
+function getGP() {
 	let urlParameters = paramObj(window.location.href);
-	//var id = urlParameters.gp;
-	var id = 1;
+	return urlParameters.gp;
+}
+
+
+
+function infoPlayerConstructor(players) {
+	var id = getGP();
+	//var id = 1;
 	let infoPlayer = document.createElement('div');
 	
 	for(let i=0; i<players.length; i++) {
@@ -255,14 +251,14 @@ function putShipsOnGrid(prefix,ships) {
 		
 		let ship = ships[i];
 
-		switch (ship.Type) {
+		switch (ship.type) {
 			
-		case 'Destroyer': 	implementClasses(prefix,' destroyer-color',ship.Locations);	
+		case 'Destroyer': 	implementClasses(prefix,' destroyer-color',ship.locations);	
 												break;
 				
-		case 'Submarine':		implementClasses(prefix,' submarine-color',ship.Locations);	
+		case 'Submarine':		implementClasses(prefix,' submarine-color',ship.locations);	
 												break;
-		case 'PatrolBoat': implementClasses(prefix,' patrol-boat-color',ship.Locations);
+		case 'PatrolBoat': implementClasses(prefix,' patrol-boat-color',ship.locations);
 												break;
 		default: 						alert('Type ship doesnt match');
 												break;
@@ -354,22 +350,24 @@ function drop(ev) {
 			let locations = createLocations(letter,position,length);
 			
 			if(locationsAreFree(prefix, locations)) {
-				let ship = createShipObject(type,locations); 
-			
-				putShipsOnGrid(prefix,ship);
+				let ship = createShipObject(type,locations);
+				
+				console.log(type);
+				postShip(prefix,ship);
 
 				// Delete drag attributes in the legend
 				let legend = document.getElementById(type);
 				legend.removeAttribute('draggable');
 				legend.removeAttribute('ondragstart');
 				legend.classList.remove('bold');
+
+			
+				
 			}
 			else {
 				return false;
 			}
-			
-			
-			
+
 		}	
 			
 		 else {
@@ -422,8 +420,8 @@ function createLocations(letter,position,length) {
 
 function createShipObject(data,locations) {
 	return [{
-				Type: data,
-				Locations: locations
+				type: data,
+				locations: locations
 			}];
 }
 
@@ -431,4 +429,26 @@ function createShipObject(data,locations) {
 // Check if the ship fits into the grid
 function isFit(pos,length) {
 	return pos + length <= 11;
+}
+
+
+function postShip(prefix,ship) {
+	var id = getGP();
+	$.post({
+  url: '/api/games/players/' + id + '/ships', 
+  data: JSON.stringify(ship),
+  dataType: "text",
+  contentType: "application/json"
+	})
+	.done(function (response) {
+		putShipsOnGrid(prefix,ship);
+	})
+	.fail(function (response) {
+		let legend = document.getElementById(ship.type);
+		legend.setAttribute('draggable','true');
+		legend.setAttribute('ondragstart','drag(event)');
+		legend.className += ' bold';
+	});
+	
+	
 }
