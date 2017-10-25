@@ -27,18 +27,10 @@
       ]
     },
     {
-      "Type": "Patrol Boat",
+      "Type": "PatrolBoat",
       "Locations": [
         "B4",
         "B5"
-      ]
-    },
-    {
-      "Type": "Destroyer",
-      "Locations": [
-        "H2",
-        "H3",
-        "H4"
       ]
     }
   ],

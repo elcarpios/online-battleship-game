@@ -9,12 +9,6 @@ $(document).ready(function() {
 	
 	setLogoutForm();
 	
-	let ships = true;
-	
-	if(ships) {
-		setShips();
-	}
-	
 });
 
 
@@ -28,22 +22,6 @@ function setShips() {
 		ship.addEventListener('click',function(){setShip(this.id);});
 	}
 }
-
-function setShip(type) {
-	
-	// First hide the set ship layers
-	let layers = document.getElementsByClassName('ships-layer');
-	console.log(layers);
-	for(layer of layers) {
-		console.log(layer);
-		layer.style.visibility = 'hidden';
-	}
-	
-	// Let to put the ships on grid
-	
-	
-}
-
 
 function setLogoutForm() {
 	
@@ -100,12 +78,17 @@ function startFunctions(data) {
 		let ownGrid = gridConstructor('ownGrid',ownPrefix);
 		document.getElementById('own-board').appendChild(ownGrid);
 		
-		let ownShips = shipsContainerConstructor('own');
-		document.getElementById('own-board').appendChild(ownShips);
-
-		// Exists ships to print?
-		if(data.ships != null) 
+		// Print or positioning ships
+		if(data.ships.length < 2) {
+			let ownShips = shipsContainerConstructor('own');
+			document.getElementById('own-board').appendChild(ownShips);
+			
+		}
+		else {
+			console.log("hooa");
 			putShipsOnGrid(ownPrefix, data.ships);
+		}
+
 
 		// Exists salvoes to print?
 		if(ownTurnsSalvoes.length > 0) 
@@ -140,7 +123,7 @@ function shipsContainerConstructor(who) {
 	
 	let container = document.createElement('div');
 	
-	let shipsList = ['Destroyer','Submarine','Patrol Boat'];
+	let shipsList = ['Destroyer','Submarine','PatrolBoat'];
 	
 	// Add the ships into the box
 	let legend = addShipsToLegend(who,shipsList);
@@ -251,7 +234,7 @@ function putShipsOnGrid(prefix,ships) {
 	for(let i=0; i<ships.length; i++) {
 		
 		let ship = ships[i];
-		
+		console.log(ship.Type)
 		switch (ship.Type) {
 			
 		case 'Destroyer': 	implementClasses(prefix,' destroyer',ship.Locations);	
@@ -259,7 +242,7 @@ function putShipsOnGrid(prefix,ships) {
 				
 		case 'Submarine':		implementClasses(prefix,' submarine',ship.Locations);	
 												break;
-		case 'Patrol Boat': implementClasses(prefix,' patrol-boat',ship.Locations);
+		case 'PatrolBoat': implementClasses(prefix,' patrol-boat',ship.Locations);
 												break;
 		default: 						alert('Type ship doesnt match');
 												break;
@@ -327,8 +310,12 @@ function drop(ev) {
 	
     ev.preventDefault();
 	
-    var data = ev.dataTransfer.getData("text");
+    var type = ev.dataTransfer.getData("text");
 		
+		// Drag only ships
+		if(!isShip(type)) {
+			return;
+		}
 	
 		// Get the prefix of the row
 		let prefix = ev.target.id.slice(0,3);
@@ -339,32 +326,60 @@ function drop(ev) {
 	
 	
 		// Set the ship size
-		let length = (data == 'Patrol Boat') ? 2 : 3;
+		let length = (type == 'PatrolBoat') ? 2 : 3;
 	
 		// Check if fits in the position
 		if(isFit(position,length)) {
 			
-			// Create locations for the ship
 			let locations = createLocations(letter,position,length);
 			
-			// Create the object ship to send into printer
-			let ship = [{
-				Type: data,
-				Locations: locations
-			}];
+			if(locationsAreFree(prefix, locations)) {
+				let ship = createShipObject(type,locations); 
 			
-			putShipsOnGrid(prefix,ship);
+				putShipsOnGrid(prefix,ship);
+
+				// Delete drag attributes in the legend
+				let legend = document.getElementById(type);
+				legend.removeAttribute('draggable');
+				legend.removeAttribute('ondragstart');
+				
+			}
+			else {
+				return false;
+			}
 			
-			//Delete dragable properties of the ship
-			// Delete the ship in the legend
-			let legend = document.getElementById(data);
-			legend.parentNode.removeChild(legend);
+			
 			
 		}	
 			
 		 else {
 			alert('No real position');
 		}
+}
+
+
+function locationsAreFree(prefix,locations) {
+	
+	for(let location of locations) {
+		
+		let cellName = prefix + location;
+		let cell = document.getElementById(cellName);
+		
+		let classes = cell.className.split(' ');
+		
+		if(classes.length > 2) {
+			alert('This position is not available');
+			return false;
+		}
+	}
+	
+	return true;
+	
+}
+
+
+function isShip(type) {
+	return type == 'Destroyer' || type == 'Submarine' || type == 'PatrolBoat';
 }
 
 
@@ -380,6 +395,14 @@ function createLocations(letter,position,length) {
 	}
 	
 	return locations;
+}
+
+
+function createShipObject(data,locations) {
+	return [{
+				Type: data,
+				Locations: locations
+			}];
 }
 
 
