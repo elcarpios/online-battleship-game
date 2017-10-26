@@ -1,3 +1,9 @@
+// Global variables
+	var salvo = {
+		turn: 1,
+		locations: []
+	};
+
 $(document).ready(function() {
 	
 	let urlParameters = paramObj(window.location.href);
@@ -8,6 +14,7 @@ $(document).ready(function() {
 	getJsonAndStartFunctions(urlJson);	
 	
 	setLogoutForm();
+	
 	
 });
 
@@ -69,7 +76,7 @@ function startFunctions(data) {
 		if(data.ships != null) {
 			var usedShips = shipsUsed(data.ships);
 			putShipsOnGrid(ownPrefix, data.ships);
-			
+			// Check if all ships are placed to be ready to atack			
 		}
 		else {
 			var usedShips = [''];
@@ -100,7 +107,11 @@ function startFunctions(data) {
 	
 		let opShips = shipsContainerConstructor('op');
 		document.getElementById('op-board').appendChild(opShips);
-
+	
+		if(data.ships.length == 3) {
+				setOpositeGrid();
+			}
+		
 		// Exists salvoes to print?
 		if(opositeTurnsSalvoes.length > 0) 
 				putSalvoesOnGrid(opositePrefix, opositeTurnsSalvoes);
@@ -110,12 +121,12 @@ function startFunctions(data) {
 
 
 function shipsUsed(ships) {
-	
+
 	let shipsName = [];
 	
 	for(let ship of ships) {
 		
-		shipsName.push(ship.Type);
+		shipsName.push(ship.type);
 		
 	}
 	
@@ -227,10 +238,12 @@ function gridConstructor(idDiv,idPrefix) {
 			}
 			// Normal cells
 			else {
-				cell.id = idPrefix + header[i] + j;
+				cell.id = idPrefix + header[j] + i;
 				cell.className += ' cell';
-				cell.setAttribute('ondrop','drop(event)');
-				cell.setAttribute('ondragover','allowDrop(event)');
+				if(idPrefix == 'own') {
+					cell.setAttribute('ondrop','drop(event)');
+					cell.setAttribute('ondragover','allowDrop(event)');
+				}
 			}
 			
 			row.appendChild(cell);
@@ -442,6 +455,10 @@ function postShip(prefix,ship) {
 	})
 	.done(function (response) {
 		putShipsOnGrid(prefix,ship);
+
+		if(response == 'Start-Game'){
+			setOpositeGrid();
+		}
 	})
 	.fail(function (response) {
 		let legend = document.getElementById(ship.type);
@@ -451,4 +468,59 @@ function postShip(prefix,ship) {
 	});
 	
 	
+}
+
+// Set listeners for enemy grid
+function setOpositeGrid() {
+	console.log(salvo);
+	$('#oppositeGrid td.cell').on('click', function() {
+		console.log(salvo);
+		if((salvo.locations.length <= 3) && isPossibleSalvo(this.id)) {
+			salvo.locations.push(this.id);
+			this.className += ' bombed';
+			console.log('bombed');
+			if(salvo.locations.length == 3) {
+				fireSalvo(salvo);
+				salvo.turn++;
+				salvo.locations = [];
+				console.log('lets fire');
+			}
+		}
+	
+	});
+	
+}
+
+
+function fireSalvo(salvo) {
+	var id = getGP();
+	for(let i=0; i<salvo.locations.length; i++) {
+		salvo.locations[i] = salvo.locations[i].slice(2);
+		console.log(salvo.locations[i]);
+	}
+	console.log(salvo);
+	$.post({
+  url: '/api/games/players/' + id + '/salvoes', 
+  data: JSON.stringify(salvo),
+  dataType: "text",
+  contentType: "application/json"
+	})
+	.done(function (response) {
+		console.log('done');
+	})
+	.fail(function (response) {
+
+	});
+}
+
+
+function isPossibleSalvo(idCell) {
+	
+	// Check if that cell has some before salvo
+	if($(this.id).hasClass('bombed')) {
+		alert('This locations has already been bombed')
+	}
+	else {
+		return true;
+	}
 }

@@ -297,7 +297,11 @@ public class SalvoController {
             for (Ship ship : ships) {
                 saveShip(gp, ship);
             }
-            return new ResponseEntity<>("Ships have been placed", HttpStatus.CREATED);
+            if(gp.getShips().size() < 3) {
+                return new ResponseEntity<>("Ships have been placed", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("Start-Game", HttpStatus.CREATED);
+            }
         }
 
     }
