@@ -1,6 +1,5 @@
 // Global variables
 	var salvo = {
-		turn: 1,
 		locations: []
 	};
 
@@ -297,10 +296,10 @@ function putSalvoesOnGrid(prefix, turns) {
 		
 		let salvoes = turns[i];
 		
-		for (let j=0; j<salvoes.length; j++) {
+		for (let j=0; j<salvoes.locations.length; j++) {
 			
-			let salvo = salvoes[j];
-			
+			let salvo = salvoes.locations[j];
+
 			let salvoCell = document.getElementById(prefix + salvo);
 			let classesCell = salvoCell.classList;
 			
@@ -317,7 +316,7 @@ function putSalvoesOnGrid(prefix, turns) {
 				
 			}
 			
-			salvoCell.innerHTML = i + 1;
+			salvoCell.innerHTML = salvoes.turn;
 			
 		}
 	}
@@ -474,15 +473,13 @@ function postShip(prefix,ship) {
 function setOpositeGrid() {
 	console.log(salvo);
 	$('#oppositeGrid td.cell').on('click', function() {
-		console.log(salvo);
 		if((salvo.locations.length <= 3) && isPossibleSalvo(this.id)) {
 			salvo.locations.push(this.id);
 			this.className += ' bombed';
 			console.log('bombed');
 			if(salvo.locations.length == 3) {
 				fireSalvo(salvo);
-				salvo.turn++;
-				salvo.locations = [];
+				//
 				console.log('lets fire');
 			}
 		}
@@ -494,9 +491,10 @@ function setOpositeGrid() {
 
 function fireSalvo(salvo) {
 	var id = getGP();
+
 	for(let i=0; i<salvo.locations.length; i++) {
 		salvo.locations[i] = salvo.locations[i].slice(2);
-		console.log(salvo.locations[i]);
+		console.log(salvo);
 	}
 	console.log(salvo);
 	$.post({
@@ -507,9 +505,10 @@ function fireSalvo(salvo) {
 	})
 	.done(function (response) {
 		console.log('done');
+		salvo.locations = [];
 	})
 	.fail(function (response) {
-
+		console.log(response);
 	});
 }
 

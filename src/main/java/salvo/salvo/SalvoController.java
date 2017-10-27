@@ -222,7 +222,10 @@ public class SalvoController {
     private List<Object> makeSalvoesDTO(Set<Salvo> salvoes) {
         List<Object> dto = new ArrayList<>();
         for (Salvo salvo : salvoes) {
-            dto.add(salvo.getLocations());
+            Map<String,Object> salvoMap = new HashMap<>();
+            salvoMap.put("turn",salvo.getTurn());
+            salvoMap.put("locations",salvo.getLocations());
+            dto.add(salvoMap);
         }
         return dto;
     }
@@ -313,7 +316,7 @@ public class SalvoController {
 
     // Method to create and save list of salvoes
     @RequestMapping(value = "/games/players/{gpId}/salvoes", method = RequestMethod.POST)
-    public ResponseEntity<String> createSalvoes(@PathVariable("gpId") long gpId,
+    public ResponseEntity<String> createSalvoes(@PathVariable long gpId,
                                                 @RequestBody Salvo salvo,
                                                 Authentication authentication) {
         GamePlayer gp = gamePlayerRepo.findOne(gpId);
@@ -321,11 +324,10 @@ public class SalvoController {
         Player user = playerRepo.findByUserName(authentication.getName());
         if (isGuest(authentication) || gp == null || (user.getId() != gp.getPlayer().getId())) {
             return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
-        } else if (salvoRepo.findByTurn(salvo.getTurn()) != null) {
-            return new ResponseEntity<>("Submited Salvo", HttpStatus.FORBIDDEN);
         } else {
-           Salvo finalSalvo = new Salvo(salvo.getTurn(), salvo.getLocations(), gp);
-           salvoRepo.save(finalSalvo);
+            salvo.setGamePlayer(gp);
+            salvo.setTurn(gp.getLastTurn()+1);
+            salvoRepo.save(salvo);
             return new ResponseEntity<>("Salvoes saved", HttpStatus.CREATED);
         }
     }
